@@ -5,9 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using SockLibNG.Domain.Sockets;
 
 namespace SockLibNG
 {
+    //Callback for NonBlocking TcpAccept thread
+    public delegate void TcpAcceptThreadCallback(Socket clientSocket);
+
     class SockLib
     {
         public static Socket TcpListen(int port, int backlog = 10)
@@ -18,6 +23,23 @@ namespace SockLibNG
             listenSocket.Bind(localEndPoint);
             listenSocket.Listen(backlog);
             return listenSocket;
+        }
+
+        public static Socket TcpAccept(Socket listenSocket, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, TcpAcceptThreadCallback callback = null)
+        {
+            if (type == SocketCommunicationTypes.Blocking)
+            {
+                return listenSocket.Accept();
+            }
+            if (callback == null) throw new ArgumentNullException("You must provide a valid callback when using the NonBlocking type");
+            new Thread(() => TcpAcceptThread(listenSocket, callback)).Start();
+            return null;
+        }
+
+        private static void TcpAcceptThread(Socket listenSocket, TcpAcceptThreadCallback callback)
+        {
+            listenSocket.Accept();
+            callback(listenSocket);
         }
 
         public static Socket TcpConnect(string ipAddress, int port)
