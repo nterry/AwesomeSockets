@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buffer\Buffer.cs" />
+    <Compile Include="Domain\Sockets\SocketCommunicationTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SockLib.cs" />
   </ItemGroup>

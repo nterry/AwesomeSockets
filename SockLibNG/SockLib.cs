@@ -11,7 +11,7 @@ using SockLibNG.Domain.Sockets;
 namespace SockLibNG
 {
     //Callback for NonBlocking TcpAccept thread
-    public delegate void TcpAcceptThreadCallback(Socket clientSocket);
+    public delegate void SocketThreadCallback(Socket socket);
 
     class SockLib
     {
@@ -25,7 +25,7 @@ namespace SockLibNG
             return listenSocket;
         }
 
-        public static Socket TcpAccept(Socket listenSocket, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, TcpAcceptThreadCallback callback = null)
+        public static Socket TcpAccept(Socket listenSocket, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
         {
             if (type == SocketCommunicationTypes.Blocking)
             {
@@ -36,19 +36,35 @@ namespace SockLibNG
             return null;
         }
 
-        private static void TcpAcceptThread(Socket listenSocket, TcpAcceptThreadCallback callback)
+        private static void TcpAcceptThread(Socket listenSocket, SocketThreadCallback callback)
         {
             listenSocket.Accept();
             callback(listenSocket);
         }
 
-        public static Socket TcpConnect(string ipAddress, int port)
+        public static Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
         {
             var connectSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress ip = new IPAddress(ParseIpAddress(ipAddress));
             IPEndPoint remoteEndpoint = new IPEndPoint(ip, port);
-            connectSocket.Connect(remoteEndpoint);
-            return connectSocket;
+            if (type == SocketCommunicationTypes.Blocking)
+            {
+                connectSocket.Connect(remoteEndpoint);
+                return connectSocket;
+            }
+            if (callback == null) throw new ArgumentNullException("You must provide a valid callback when using the NonBlocking type");
+            new Thread(() => TcpConnectThread(connectSocket, remoteEndpoint, callback)).Start();
+            return null;
+        }
+
+        private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, SocketThreadCallback callback)
+        {
+            connectSocket.Connect(remoteEndpont);
+            callback(connectSocket);
+        }
+
+        public static Buffer CreateBuffer()
+        {
         }
 
         private static byte[] ParseIpAddress(string ipAddress)
