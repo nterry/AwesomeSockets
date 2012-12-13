@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using SockLibNG.Domain.Sockets;
 
-namespace SockLibNG
+namespace SockLibNG.Sockets
 {
     //Callback for NonBlocking TcpAccept thread
     public delegate void SocketThreadCallback(Socket socket);
 
     class SockLib
     {
-        public static Socket TcpListen(int port, int backlog = 10)
+        public static System.Net.Sockets.Socket TcpListen(int port, int backlog = 10)
         {
             var listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress ip = new IPAddress(new byte[] { 0, 0, 0, 0 });
@@ -42,9 +40,9 @@ namespace SockLibNG
             callback(listenSocket);
         }
 
-        public static Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
+        public static System.Net.Sockets.Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
         {
-            var connectSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var connectSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress ip = new IPAddress(ParseIpAddress(ipAddress));
             IPEndPoint remoteEndpoint = new IPEndPoint(ip, port);
             if (type == SocketCommunicationTypes.Blocking)
@@ -57,7 +55,7 @@ namespace SockLibNG
             return null;
         }
 
-        private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, SocketThreadCallback callback)
+        private static void TcpConnectThread(System.Net.Sockets.Socket connectSocket, EndPoint remoteEndpont, SocketThreadCallback callback)
         {
             connectSocket.Connect(remoteEndpont);
             callback(connectSocket);

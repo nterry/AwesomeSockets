@@ -40,10 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Buffer\Buffer.cs" />
+    <Compile Include="Buffers\Buffer.cs" />
     <Compile Include="Domain\Sockets\SocketCommunicationTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SockLib.cs" />
+    <Compile Include="Sockets\SockLib.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
