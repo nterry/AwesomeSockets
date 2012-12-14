@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SockLibNG.Buffers
 {
-    class Buffer
+    public class Buffer
     {
         private const int BufferSize = 1024;
         private readonly byte[] bytes;
@@ -33,6 +33,14 @@ namespace SockLibNG.Buffers
             buffer.Add(value);
         }
 
+        public static T Get<T>(Buffer buffer)
+        {
+            if (typeof(T) == typeof(bool)) return (T) (object) buffer.GetBoolean();
+            if (typeof(T) == typeof(byte)) return (T) (object) buffer.GetByte();
+            return (T)(object)'c';
+            //TODO: Need to complete list for all types.
+        }
+
         private void ClearBuffer()
         {
             for (var i = 0; i < BufferSize; i ++)
@@ -52,11 +60,6 @@ namespace SockLibNG.Buffers
                 bytes[position] = b;
                 position += 1;
             }
-        }
-
-        private byte[] Get()
-        {
-            return bytes;
         }
 
         //NOTE: BitConverter class is .NET ONLY AFAIK. In order to be mono compliant, we need to use DataConvert located at http://www.mono-project.com/Mono_DataConvert

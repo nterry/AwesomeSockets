@@ -11,7 +11,7 @@ namespace SockLibNG.Sockets
     //Callback for NonBlocking TcpAccept thread
     public delegate void SocketThreadCallback(Socket socket);
 
-    class SockLib
+    public class SockLib
     {
         public static System.Net.Sockets.Socket TcpListen(int port, int backlog = 10)
         {
@@ -59,10 +59,6 @@ namespace SockLibNG.Sockets
         {
             connectSocket.Connect(remoteEndpont);
             callback(connectSocket);
-        }
-
-        public static Buffer CreateBuffer()
-        {
         }
 
         private static byte[] ParseIpAddress(string ipAddress)
