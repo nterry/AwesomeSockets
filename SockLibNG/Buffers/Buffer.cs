@@ -6,14 +6,16 @@ namespace SockLibNG.Buffers
 {
     public class Buffer
     {
-        private const int BufferSize = 1024;
+        private const int BUFFER_SIZE = 1024;
         private readonly byte[] bytes;
-        private int position; 
+        private int position;
+        private bool finalized;
 
-        public Buffer()
+        private Buffer()
         {
-            bytes = new byte[BufferSize];
+            bytes = new byte[BUFFER_SIZE];
             position = 0;
+            finalized = false;
         }
 
         public static Buffer New()
@@ -27,6 +29,12 @@ namespace SockLibNG.Buffers
             buffer.ClearBuffer();
         }
 
+        public static void FinalizeBuffer(Buffer buffer)
+        {
+            if (buffer == null) throw new ArgumentNullException("Buffer provided cannot be null");
+            buffer.FinalizeBuffer();
+        }
+
         public static void Add(Buffer buffer, object value)
         {
             if (buffer == null) throw new ArgumentNullException("Buffer provided cannot be null");
@@ -37,16 +45,33 @@ namespace SockLibNG.Buffers
         {
             if (typeof(T) == typeof(bool)) return (T) (object) buffer.GetBoolean();
             if (typeof(T) == typeof(byte)) return (T) (object) buffer.GetByte();
-            return (T)(object)'c';
-            //TODO: Need to complete list for all types.
+            if (typeof(T) == typeof(sbyte)) return (T) (object) buffer.GetSByte();
+            if (typeof(T) == typeof(char)) return (T) (object) buffer.GetChar();
+            if (typeof(T) == typeof(double)) return (T) (object) buffer.GetDouble();
+            if (typeof(T) == typeof(float)) return (T) (object) buffer.GetFloat();
+            if (typeof(T) == typeof(int)) return (T) (object) buffer.GetInt();
+            if (typeof(T) == typeof(uint)) return (T) (object) buffer.GetUInt();
+            if (typeof(T) == typeof(long)) return (T) (object) buffer.GetLong();
+            if (typeof(T) == typeof(ulong)) return (T) (object) buffer.GetULong();
+            if (typeof(T) == typeof(short)) return (T) (object) buffer.GetShort();
+            if (typeof(T) == typeof(ushort)) return (T) (object) buffer.GetUShort();
+            if (typeof(T) == typeof(string)) return (T) (object) buffer.GetString();  //TODO: Need to automatically append null terminator to string ('\0')
+            throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
         }
 
         private void ClearBuffer()
         {
-            for (var i = 0; i < BufferSize; i ++)
+            for (var i = 0; i < BUFFER_SIZE; i ++)
             {
                 bytes[i] = 0;
             }
+            position = 0;
+            finalized = false;
+        }
+
+        private void FinalizeBuffer()
+        {
+            finalized = true;   //TODO: Need to make all commands check for this flag before doing anything!!!!!
             position = 0;
         }
 
@@ -78,7 +103,7 @@ namespace SockLibNG.Buffers
             if (primitive is short) return BitConverter.GetBytes((short)primitive);
             if (primitive is ushort) return BitConverter.GetBytes((ushort)primitive);
             if (primitive is string) return new ASCIIEncoding().GetBytes((string) primitive);
-            throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive.");
+            throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
         }
 
         private bool GetBoolean()
@@ -167,6 +192,35 @@ namespace SockLibNG.Buffers
             var value = BitConverter.ToInt16(bytes, position);
             position += sizeof(short);
             return value;
+        }
+
+        private ushort GetUShort()
+        {
+            if (!CheckBufferBoundaries(sizeof(ushort))) throw new ConstraintException("Failed to get short, reached end of buffer.");
+            var value = BitConverter.ToUInt16(bytes, position);
+            position += sizeof(ushort);
+            return value;
+        }
+
+        private string GetString()
+        {
+            var localPosition = -1;
+            for (var i = position; i <= BUFFER_SIZE; i++)
+            {
+                if (bytes[i] == '\0')
+                {
+                    localPosition = i;
+                    break;
+                }
+            }
+
+            if (localPosition != -1)
+            {
+                var str =  new ASCIIEncoding().GetString(bytes, position, localPosition - position);
+                position = localPosition + 1;
+                return str;
+            }
+            throw new ConstraintException("Failed to get string, reached end of buffer.");
         }
 
         private bool CheckBufferBoundaries(byte[] bytesToCheck)
