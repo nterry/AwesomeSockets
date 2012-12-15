@@ -106,6 +106,7 @@ namespace SockLibNG.Buffers
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
         }
 
+        #region private getters
         private bool GetBoolean()
         {
             if (!CheckBufferBoundaries(sizeof(bool))) throw new ConstraintException("Failed to get bool, reached end of buffer.");
@@ -222,6 +223,8 @@ namespace SockLibNG.Buffers
             }
             throw new ConstraintException("Failed to get string, reached end of buffer.");
         }
+        #endregion
+
 
         private bool CheckBufferBoundaries(byte[] bytesToCheck)
         {
