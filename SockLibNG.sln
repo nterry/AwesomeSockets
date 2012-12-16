@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SockLibNG", "SockLibNG\SockLibNG.csproj", "{32C0DE21-275E-43D0-9D4F-B97B3620E282}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SockLibNG.Tests", "SockLibNG.Tests\SockLibNG.Tests.csproj", "{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,16 @@ Global
 		{32C0DE21-275E-43D0-9D4F-B97B3620E282}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{32C0DE21-275E-43D0-9D4F-B97B3620E282}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{32C0DE21-275E-43D0-9D4F-B97B3620E282}.Release|x86.ActiveCfg = Release|Any CPU
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Debug|x86.ActiveCfg = Debug|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Debug|x86.Build.0 = Debug|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Release|Any CPU.ActiveCfg = Release|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Release|x86.ActiveCfg = Release|x86
+		{8AEE00AC-6336-4F87-9A41-3CFC0CA3907E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

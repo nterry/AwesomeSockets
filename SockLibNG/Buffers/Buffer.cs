@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Text;
+using SockLibNG.Domain.Exceptions;
 
 namespace SockLibNG.Buffers
 {
@@ -25,24 +26,26 @@ namespace SockLibNG.Buffers
 
         public static void ClearBuffer(Buffer buffer)
         {
-            if (buffer == null) throw new ArgumentNullException("Buffer provided cannot be null");
+            if (buffer == null) throw new ArgumentNullException("buffer");
             buffer.ClearBuffer();
         }
 
         public static void FinalizeBuffer(Buffer buffer)
         {
-            if (buffer == null) throw new ArgumentNullException("Buffer provided cannot be null");
+            if (buffer == null) throw new ArgumentNullException("buffer");
             buffer.FinalizeBuffer();
         }
 
         public static void Add(Buffer buffer, object value)
         {
-            if (buffer == null) throw new ArgumentNullException("Buffer provided cannot be null");
+            if (buffer == null) throw new ArgumentNullException("buffer");
+            if (buffer.finalized) throw new BufferFinalizedException("Buffer provided is in 'finalized' state. You must call 'ClearBuffer()' to reset it.");
             buffer.Add(value);
         }
 
         public static T Get<T>(Buffer buffer)
         {
+            if (buffer == null) throw new ArgumentNullException("buffer");
             if (typeof(T) == typeof(bool)) return (T) (object) buffer.GetBoolean();
             if (typeof(T) == typeof(byte)) return (T) (object) buffer.GetByte();
             if (typeof(T) == typeof(sbyte)) return (T) (object) buffer.GetSByte();
@@ -55,7 +58,7 @@ namespace SockLibNG.Buffers
             if (typeof(T) == typeof(ulong)) return (T) (object) buffer.GetULong();
             if (typeof(T) == typeof(short)) return (T) (object) buffer.GetShort();
             if (typeof(T) == typeof(ushort)) return (T) (object) buffer.GetUShort();
-            if (typeof(T) == typeof(string)) return (T) (object) buffer.GetString();  //TODO: Need to automatically append null terminator to string ('\0')
+            if (typeof(T) == typeof(string)) return (T) (object) buffer.GetString();
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
         }
 
@@ -71,13 +74,13 @@ namespace SockLibNG.Buffers
 
         private void FinalizeBuffer()
         {
-            finalized = true;   //TODO: Need to make all commands check for this flag before doing anything!!!!!
+            finalized = true;
             position = 0;
         }
 
         private void Add(object primitive)
         {
-            if (primitive == null) throw new ArgumentNullException("Value provided cannot be null");
+            if (primitive == null) throw new ArgumentNullException("primitive");
             var array = ConvertToByteArray(primitive);
             if (!CheckBufferBoundaries(array)) throw new ConstraintException("Failed to add primitive to buffer. There is no additional room for it.");
             foreach (var b in array)
@@ -88,7 +91,7 @@ namespace SockLibNG.Buffers
         }
 
         //NOTE: BitConverter class is .NET ONLY AFAIK. In order to be mono compliant, we need to use DataConvert located at http://www.mono-project.com/Mono_DataConvert
-        private byte[] ConvertToByteArray(object primitive)
+        private static byte[] ConvertToByteArray(object primitive)
         {
             if (primitive is bool) return BitConverter.GetBytes((bool)primitive);
             if (primitive is byte) return BitConverter.GetBytes((byte)primitive);
@@ -102,7 +105,12 @@ namespace SockLibNG.Buffers
             if (primitive is ulong) return BitConverter.GetBytes((ulong)primitive);
             if (primitive is short) return BitConverter.GetBytes((short)primitive);
             if (primitive is ushort) return BitConverter.GetBytes((ushort)primitive);
-            if (primitive is string) return new ASCIIEncoding().GetBytes((string) primitive);
+            if (primitive is string)
+            {
+                var str = primitive as string;
+                if (str.Contains("\0")) throw new DataException("String cannot contain null character '\\0'");
+                return new ASCIIEncoding().GetBytes(str + "\0");    //The '\0' is to null-reminate the string so we can deserialize it on the other end as strings aren't fixed in size
+            }  
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
         }
 
