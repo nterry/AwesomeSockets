@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using SockLibNG.Domain.Sockets;
+using Buffer = SockLibNG.Buffers.Buffer;
 
 namespace SockLibNG.Sockets
 {
@@ -13,7 +14,7 @@ namespace SockLibNG.Sockets
 
     public class SockLib
     {
-        public static System.Net.Sockets.Socket TcpListen(int port, int backlog = 10)
+        public static Socket TcpListen(int port, int backlog = 10)
         {
             var listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress ip = new IPAddress(new byte[] { 0, 0, 0, 0 });
@@ -34,15 +35,9 @@ namespace SockLibNG.Sockets
             return null;
         }
 
-        private static void TcpAcceptThread(Socket listenSocket, SocketThreadCallback callback)
+        public static Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
         {
-            listenSocket.Accept();
-            callback(listenSocket);
-        }
-
-        public static System.Net.Sockets.Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
-        {
-            var connectSocket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var connectSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress ip = new IPAddress(ParseIpAddress(ipAddress));
             IPEndPoint remoteEndpoint = new IPEndPoint(ip, port);
             if (type == SocketCommunicationTypes.Blocking)
@@ -55,7 +50,28 @@ namespace SockLibNG.Sockets
             return null;
         }
 
-        private static void TcpConnectThread(System.Net.Sockets.Socket connectSocket, EndPoint remoteEndpont, SocketThreadCallback callback)
+        public static int SendMessage(Socket socket, Buffer buffer)
+        {
+            return socket.Send(Buffer.GetBuffer(buffer));
+        }
+
+        public static int ReceiveMessage(Socket socket, Buffer buffer)
+        {
+            return socket.Receive(Buffer.GetBufferRef(buffer));
+        }
+
+        public static int BytesAvailable(Socket socket)
+        {
+            return socket.Available;
+        }
+
+        private static void TcpAcceptThread(Socket listenSocket, SocketThreadCallback callback)
+        {
+            listenSocket.Accept();
+            callback(listenSocket);
+        }
+
+        private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, SocketThreadCallback callback)
         {
             connectSocket.Connect(remoteEndpont);
             callback(connectSocket);

@@ -36,6 +36,18 @@ namespace SockLibNG.Buffers
             buffer.FinalizeBuffer();
         }
 
+        public static void Add(Buffer buffer, byte[] byteArray)
+        {
+            if (buffer == null) throw new ArgumentNullException("buffer");
+            if (buffer.finalized) throw new BufferFinalizedException("Buffer provided is in 'finalized' state. You must call 'ClearBuffer()' to reset it.");
+            buffer.ClearBuffer();
+            foreach (var b in byteArray)
+            {
+                buffer.bytes[buffer.position] = b;
+                buffer.position += 1;
+            }
+        }
+
         public static void Add(Buffer buffer, object value)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
@@ -60,6 +72,25 @@ namespace SockLibNG.Buffers
             if (typeof(T) == typeof(ushort)) return (T) (object) buffer.GetUShort();
             if (typeof(T) == typeof(string)) return (T) (object) buffer.GetString();
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
+        }
+
+        public static byte[] GetBuffer(Buffer buffer)
+        {
+           if (buffer == null) throw new ArgumentNullException("buffer");
+           if (!buffer.finalized) throw new BufferFinalizedException("Buffer provided is not in 'finalized' state. You must call 'FinalizeBuffer()' in order to get the full buffer");
+           return buffer.GetBuffer();
+        }
+
+        public static byte[] GetBufferRef(Buffer buffer)
+        {
+            if (buffer == null) throw new ArgumentNullException("buffer");
+            buffer.ClearBuffer();
+            return buffer.GetBuffer();
+        }
+
+        private byte[] GetBuffer()
+        {
+            return bytes;
         }
 
         private void ClearBuffer()
