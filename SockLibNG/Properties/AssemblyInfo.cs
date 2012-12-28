@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SockLibNG")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Next Generation of SockLib")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SockLibNG")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCopyright("Copyright ©  2012 Nicholas Terry")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

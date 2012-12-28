@@ -48,6 +48,7 @@
     <Compile Include="Buffers\BufferTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

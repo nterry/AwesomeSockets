@@ -39,13 +39,13 @@ namespace SockLibNG.Buffers
         public static void Add(Buffer buffer, byte[] byteArray)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
-            if (buffer.finalized) throw new BufferFinalizedException("Buffer provided is in 'finalized' state. You must call 'ClearBuffer()' to reset it.");
             buffer.ClearBuffer();
             foreach (var b in byteArray)
             {
                 buffer.bytes[buffer.position] = b;
                 buffer.position += 1;
             }
+            buffer.FinalizeBuffer();
         }
 
         public static void Add(Buffer buffer, object value)
@@ -74,6 +74,7 @@ namespace SockLibNG.Buffers
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
         }
 
+        //TODO: Need to add GetBuffer method that will return an array that just contains the payload witout the unfilled space at the end (if any)
         public static byte[] GetBuffer(Buffer buffer)
         {
            if (buffer == null) throw new ArgumentNullException("buffer");

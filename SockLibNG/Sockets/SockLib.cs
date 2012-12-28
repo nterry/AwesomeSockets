@@ -12,6 +12,8 @@ namespace SockLibNG.Sockets
     //Callback for NonBlocking TcpAccept thread
     public delegate void SocketThreadCallback(Socket socket);
 
+    public delegate void MessageThreadCallback(int bytes);
+
     public class SockLib
     {
         public static Socket TcpListen(int port, int backlog = 10)
@@ -55,9 +57,15 @@ namespace SockLibNG.Sockets
             return socket.Send(Buffer.GetBuffer(buffer));
         }
 
-        public static int ReceiveMessage(Socket socket, Buffer buffer)
+        public static int ReceiveMessage(Socket socket, Buffer buffer, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, MessageThreadCallback callback = null)
         {
-            return socket.Receive(Buffer.GetBufferRef(buffer));
+            if (type == SocketCommunicationTypes.Blocking)
+            {
+                return socket.Receive(Buffer.GetBufferRef(buffer));
+            }
+            if (callback == null) throw new ArgumentNullException("You must provide a valid callback when using the NonBlocking type");
+            new Thread(() => MessageReceiveThread(socket, buffer, callback));
+            return -1;  //Return negative 1 as 0 bytes received is valid and we want an invalid value 
         }
 
         public static int BytesAvailable(Socket socket)
@@ -67,14 +75,20 @@ namespace SockLibNG.Sockets
 
         private static void TcpAcceptThread(Socket listenSocket, SocketThreadCallback callback)
         {
-            listenSocket.Accept();
-            callback(listenSocket);
+            var clientSocket = listenSocket.Accept();
+            callback(clientSocket);
         }
 
         private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, SocketThreadCallback callback)
         {
             connectSocket.Connect(remoteEndpont);
             callback(connectSocket);
+        }
+
+        private static void MessageReceiveThread(Socket socket, Buffer buffer, MessageThreadCallback callback)
+        {
+            var bytes = socket.Receive(Buffer.GetBufferRef(buffer));
+            callback(bytes);
         }
 
         private static byte[] ParseIpAddress(string ipAddress)
