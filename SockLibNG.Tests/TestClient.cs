@@ -1,30 +1,32 @@
 ﻿using System;
-using SockLibNG.Domain.Sockets;
-using Buffer = SockLibNG.Buffers.Buffer;
-using SockLibNG.Sockets;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
+using System.Text;
+using SockLibNG.Domain.Sockets;
+using SockLibNG.Sockets;
+using Buffer = SockLibNG.Buffers.Buffer;
 
 namespace SockLibNG.Tests
 {
-    class TestServer
+    class TestClient
     {
-        private readonly Socket _listenSocket;
-        private Socket _client;
+        private Socket _server;
 
         private readonly Buffer _sendBuffer;
         private readonly Buffer _receiveBuffer;
 
-        public TestServer()
+        public TestClient()
         {
-            Console.WriteLine("Waiting for client to connect...");
-            _listenSocket = SockLib.TcpListen(14804);
             _sendBuffer = Buffer.New();
             _receiveBuffer = Buffer.New();
-            _client = SockLib.TcpAccept(_listenSocket);
-            SendTestMessage();
+            Console.WriteLine("Connecting to server... Please Wait");
+            _server = SockLib.TcpConnect("127.0.0.1", 14804);
             ReceiveTestMessage();
+            SendTestMessage();
             while(true)
             {
+                //Here so we run continuously...
             }
         }
 
@@ -39,25 +41,26 @@ namespace SockLibNG.Tests
             Buffer.Add(_sendBuffer, (byte)255);
             Buffer.FinalizeBuffer(_sendBuffer);
 
-            var bytesSent = SockLib.SendMessage(_client, _sendBuffer);
+            var bytesSent = SockLib.SendMessage(_server, _sendBuffer);
             Console.WriteLine(string.Format("Sent payload. {0} bytes written.", bytesSent));
         }
 
         private void ReceiveTestMessage()
         {
-            var bytesReceived = SockLib.ReceiveMessage(_client, _receiveBuffer);
+            var bytesReceived = SockLib.ReceiveMessage(_server, _receiveBuffer);
             MessageReceived(bytesReceived);
         }
 
-        private void TcpAccepted(Socket socket)
+        private void TcpConnected(Socket socket)
         {
-            _client = socket;
-            SendTestMessage();
+            Console.WriteLine("Connected to server. Waiting for server to send message...");
+            _server = socket;
+            ReceiveTestMessage();
         }
 
         private void MessageReceived(int bytesReceived)
         {
-            Console.WriteLine(string.Format("Received message from client. Size is {0}. Details are as follows: {1} (int)\n{2} (float)\n{3} (double)\n{4} (char)\n{5} (string)\n{6} (byte)", bytesReceived,
+            Console.WriteLine(string.Format("Received message from server. Size is {0}. Details are as follows: {1} (int)\n{2} (float)\n{3} (double)\n{4} (char)\n{5} (string)\n{6} (byte)", bytesReceived,
                                                                                                                                                                                 Buffer.Get<int>(_receiveBuffer), 
                                                                                                                                                                                 Buffer.Get<float>(_receiveBuffer),
                                                                                                                                                                                 Buffer.Get<double>(_receiveBuffer),

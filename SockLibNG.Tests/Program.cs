@@ -9,6 +9,14 @@ namespace SockLibNG.Tests
     {
         static void Main(string[] args)
         {
+            if (args[0] == "server")
+            {
+                new TestServer();
+            }
+            else if (args[0] == "client")
+            {
+                new TestClient();
+            }
         }
     }
 }
