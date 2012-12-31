@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using SockLibNG.Domain.Sockets;
 using SockLibNG.Sockets;
 using Buffer = SockLibNG.Buffers.Buffer;
 
-namespace SockLibNG.Tests
+namespace SockLibNG.Tests.AcceptanceTests
 {
-    class TestClient
+    class TestClientSync
     {
         private Socket _server;
 
         private readonly Buffer _sendBuffer;
         private readonly Buffer _receiveBuffer;
 
-        public TestClient()
+        public TestClientSync()
         {
             _sendBuffer = Buffer.New();
             _receiveBuffer = Buffer.New();

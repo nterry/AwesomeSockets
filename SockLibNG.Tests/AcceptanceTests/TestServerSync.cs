@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace SockLibNG.Tests
 {
-    class TestServer
+    class TestServerSync
     {
         private readonly Socket _listenSocket;
         private Socket _client;
@@ -14,7 +14,7 @@ namespace SockLibNG.Tests
         private readonly Buffer _sendBuffer;
         private readonly Buffer _receiveBuffer;
 
-        public TestServer()
+        public TestServerSync()
         {
             Console.WriteLine("Waiting for client to connect...");
             _listenSocket = SockLib.TcpListen(14804);

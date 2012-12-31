@@ -64,7 +64,7 @@ namespace SockLibNG.Sockets
                 return socket.Receive(Buffer.GetBufferRef(buffer));
             }
             if (callback == null) throw new ArgumentNullException("You must provide a valid callback when using the NonBlocking type");
-            new Thread(() => MessageReceiveThread(socket, buffer, callback));
+            new Thread(() => MessageReceiveThread(socket, buffer, callback)).Start();
             return -1;  //Return negative 1 as 0 bytes received is valid and we want an invalid value 
         }
 
