@@ -1,61 +1,64 @@
 ﻿using System;
-using System.Net.Sockets;
 using SockLibNG.Domain.Sockets;
 using SockLibNG.Sockets;
+using System.Net.Sockets;
 using Buffer = SockLibNG.Buffers.Buffer;
 
 namespace SockLibNG.Tests.AcceptanceTests
 {
-    class TestClientAsync
+    class TestServerTcpAsync
     {
-        private Socket _server;
+        private readonly Socket _listenSocket;
+        private Socket _client;
 
         private readonly Buffer _receiveBuffer;
         private readonly Buffer _sendBuffer;
 
-        public TestClientAsync()
+        public TestServerTcpAsync()
         {
             _receiveBuffer = Buffer.New();
             _sendBuffer = Buffer.New();
-
-            SockLib.TcpConnect("127.0.0.1", 14804, SocketCommunicationTypes.NonBlocking, TcpConnected);
+            _listenSocket = SockLib.TcpListen(14804);
+            Console.WriteLine("Server now listening on TCP port 14804");
+            SockLib.TcpAccept(_listenSocket, SocketCommunicationTypes.NonBlocking, ClientConnected);
             while (true)
             {
-                //Here so the main thread runs continuously.
+                //Here so the main thread runs continuously
             }
         }
 
-        private void TcpConnected(Socket socket)
+        private void ClientConnected(Socket clientSocket)
         {
-            _server = socket;
-            SockLib.ReceiveMessage(_server, _receiveBuffer, SocketCommunicationTypes.NonBlocking, MessageReceived);
+            Console.WriteLine("Client has connected.");
+            _client = clientSocket;
+            SockLib.ReceiveMessage(_client, _receiveBuffer, SocketCommunicationTypes.NonBlocking, MessageReceived);
+            SendTestMessage();
         }
 
         private void MessageReceived(int bytesReceived)
         {
-            Console.WriteLine(string.Format("Received message from server. Size is {0}. Details are as follows: {1} (int)\n{2} (float)\n{3} (double)\n{4} (char)\n{5} (string)\n{6} (byte)", bytesReceived,
+            Console.WriteLine(string.Format("Received message from client. Size is {0}. Details are as follows: {1} (int)\n{2} (float)\n{3} (double)\n{4} (char)\n{5} (string)\n{6} (byte)", bytesReceived,
                                                                                                                                                                                 Buffer.Get<int>(_receiveBuffer),
                                                                                                                                                                                 Buffer.Get<float>(_receiveBuffer),
                                                                                                                                                                                 Buffer.Get<double>(_receiveBuffer),
                                                                                                                                                                                 Buffer.Get<char>(_receiveBuffer),
                                                                                                                                                                                 Buffer.Get<string>(_receiveBuffer),
                                                                                                                                                                                 Buffer.Get<byte>(_receiveBuffer)));
-            SendTestResponse();
         }
 
-        private void SendTestResponse()
+        private void SendTestMessage()
         {
-            Console.WriteLine("Sending response to server");
+            Console.WriteLine("Sending message to client");
             Buffer.ClearBuffer(_sendBuffer);
-            Buffer.Add(_sendBuffer, 20);
-            Buffer.Add(_sendBuffer, 40.0F);
-            Buffer.Add(_sendBuffer, 80.0);
-            Buffer.Add(_sendBuffer, 'B');
-            Buffer.Add(_sendBuffer, "Giggity gigity goo!!!");
-            Buffer.Add(_sendBuffer, (byte)127);
+            Buffer.Add(_sendBuffer, 10);
+            Buffer.Add(_sendBuffer, 20.0F);
+            Buffer.Add(_sendBuffer, 40.0);
+            Buffer.Add(_sendBuffer, 'A');
+            Buffer.Add(_sendBuffer, "The quick brown fox jumped over the lazy dog");
+            Buffer.Add(_sendBuffer, (byte) 255);
             Buffer.FinalizeBuffer(_sendBuffer);
 
-            SockLib.SendMessage(_server, _sendBuffer);
+            SockLib.SendMessage(_client, _sendBuffer);
         }
     }
 }

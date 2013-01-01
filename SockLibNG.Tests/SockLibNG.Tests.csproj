@@ -45,8 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcceptanceTests\TestClientAsync.cs" />
-    <Compile Include="AcceptanceTests\TestServerAsync.cs" />
+    <Compile Include="AcceptanceTests\TestServerUdp.cs" />
+    <Compile Include="AcceptanceTests\TestClientUdp.cs" />
+    <Compile Include="AcceptanceTests\TestClientTcpAsync.cs" />
+    <Compile Include="AcceptanceTests\TestServerTcpAsync.cs" />
     <Compile Include="Buffers\BufferTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

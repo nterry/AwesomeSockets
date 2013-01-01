@@ -9,10 +9,12 @@ namespace SockLibNG.Tests
             switch (args[0])
             {
                 case "server":
-                    new TestServerAsync();
+                    //new TestServerTcpAsync();
+                    new TestServerUdp();
                     break;
                 case "client":
-                    new TestClientAsync();
+                    //new TestClientTcpAsync();
+                    new TestClientUdp();
                     break;
             }
         }
