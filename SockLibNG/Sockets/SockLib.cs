@@ -105,6 +105,18 @@ namespace SockLibNG.Sockets
             return socket.Available;
         }
 
+        public static void CloseSock(Socket socket)
+        {
+            if (socket.ProtocolType == ProtocolType.Tcp) socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
+        }
+
+        public static void CloseSock(Socket socket, int timeout)
+        {
+            if (socket.ProtocolType == ProtocolType.Tcp) socket.Shutdown(SocketShutdown.Both);
+            socket.Close(timeout);
+        }
+
         private static void TcpAcceptThread(Socket listenSocket, SocketThreadCallback callback)
         {
             var clientSocket = listenSocket.Accept();
