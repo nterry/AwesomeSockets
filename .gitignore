@@ -109,3 +109,5 @@ UpgradeLog*.XML
 
 # Resharper stuff
 _ReSharper*
+
+*.nupkg

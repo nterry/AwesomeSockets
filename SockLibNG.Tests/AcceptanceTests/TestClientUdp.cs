@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using SockLibNG.Domain.Sockets;
 using SockLibNG.Sockets;
 using Buffer = SockLibNG.Buffers.Buffer;
 

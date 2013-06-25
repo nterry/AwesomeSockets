@@ -1,5 +1,4 @@
 ﻿using System;
-using SockLibNG.Domain.Sockets;
 using Buffer = SockLibNG.Buffers.Buffer;
 using SockLibNG.Sockets;
 using System.Net.Sockets;
