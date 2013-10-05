@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/nterry/SockLibNG</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial release of code</releaseNotes>
+    <releaseNotes>Fixed error in getting remote IP information with UDP socket. Note the return for ReceiveMessage() has changed to a Tuple. See docs for more details.</releaseNotes>
     <copyright>Copyright 2012-2013</copyright>
     <tags>SockLibNG Winsock Sockets Sockets.net</tags>
   </metadata>

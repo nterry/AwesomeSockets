@@ -71,7 +71,7 @@ namespace SockLibNG.Buffers
             if (typeof(T) == typeof(short)) return (T) (object) buffer.GetShort();
             if (typeof(T) == typeof(ushort)) return (T) (object) buffer.GetUShort();
             if (typeof(T) == typeof(string)) return (T) (object) buffer.GetString();
-            throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
+            throw new DataException(string.Format("Provided type ({0}) cannot be serialized for transmission. You must provide a primitive or a string", typeof(T)));
         }
 
         //TODO: Need to add GetBuffer method that will return an array that just contains the payload witout the unfilled space at the end (if any)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using SockLibNG.Sockets;
 using Buffer = SockLibNG.Buffers.Buffer;
@@ -43,7 +44,7 @@ namespace SockLibNG.Tests.AcceptanceTests
 
         private void ReceiveTestMessage()
         {
-            var bytesReceived = SockLib.ReceiveMessage(_server, _receiveBuffer);
+            Tuple<int, EndPoint> bytesReceived = SockLib.ReceiveMessage(_server, _receiveBuffer);
             MessageReceived(bytesReceived);
         }
 
@@ -54,7 +55,7 @@ namespace SockLibNG.Tests.AcceptanceTests
             ReceiveTestMessage();
         }
 
-        private void MessageReceived(int bytesReceived)
+        private void MessageReceived(Tuple<int, EndPoint> bytesReceived)
         {
             Console.WriteLine(string.Format("Received message from server. Size is {0}. Details are as follows: {1} (int)\n{2} (float)\n{3} (double)\n{4} (char)\n{5} (string)\n{6} (byte)", bytesReceived,
                                                                                                                                                                                 Buffer.Get<int>(_receiveBuffer), 

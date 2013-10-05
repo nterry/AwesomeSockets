@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using SockLibNG.Domain.Sockets;
 using SockLibNG.Sockets;
@@ -31,7 +32,7 @@ namespace SockLibNG.Tests.AcceptanceTests
             SockLib.ReceiveMessage(_server, _receiveBuffer, SocketCommunicationTypes.NonBlocking, MessageReceived);
         }
 
-        private void MessageReceived(int bytesReceived)
+        private void MessageReceived(int bytesReceived, EndPoint remoteEndpoint)
         {
             Console.WriteLine(string.Format("Received message from server. Size is {0}. Details are as follows: {1} (int)\n{2} (float)\n{3} (double)\n{4} (char)\n{5} (string)\n{6} (byte)", bytesReceived,
                                                                                                                                                                                 Buffer.Get<int>(_receiveBuffer),
