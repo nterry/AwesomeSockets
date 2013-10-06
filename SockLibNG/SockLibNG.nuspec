@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <id>SockLibNG</id>
+    <version>1.1.0.0</version>
+    <authors>Nicholas Terry</authors>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/nterry/SockLibNG</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Next Generation of SockLib</description>
     <releaseNotes>Fixed error in getting remote IP information with UDP socket. Note the return for ReceiveMessage() has changed to a Tuple. See docs for more details.</releaseNotes>
     <copyright>Copyright 2012-2013</copyright>
     <tags>SockLibNG Winsock Sockets Sockets.net</tags>
