@@ -2,7 +2,7 @@
 
 namespace SockLibNG.Domain.Exceptions
 {
-    class BufferFinalizedException : Exception
+    public class BufferFinalizedException : Exception
     {
         public BufferFinalizedException(string message) : base(message)
         {

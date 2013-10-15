@@ -1,28 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
+using SockLibNG.Domain;
 using SockLibNG.Domain.Exceptions;
 
 namespace SockLibNG.Buffers
 {
     public class Buffer
     {
-        private const int BUFFER_SIZE = 1024;
-        private readonly byte[] bytes;
+        private const int DEFAULT_BUFFER_SIZE = 1024;
+        private readonly int bufferSize;
+        private readonly byte?[] bytes;
         private int position;
         private bool finalized;
 
-        private Buffer()
+        private Buffer(int bufferSize)
         {
-            bytes = new byte[BUFFER_SIZE];
+            this.bufferSize = bufferSize;
+            bytes = new byte?[bufferSize];
             position = 0;
             finalized = false;
         }
 
         public static Buffer New()
         {
-            return new Buffer();
+            return New(DEFAULT_BUFFER_SIZE);
         }
+
+        public static Buffer New(int bufferSize)
+        {
+            return new Buffer(bufferSize);
+        }
+
 
         public static void ClearBuffer(Buffer buffer)
         {
@@ -90,13 +101,22 @@ namespace SockLibNG.Buffers
         }
 
         private byte[] GetBuffer()
-        {
-            return bytes;
+        { 
+            var tempList = new List<byte?>();
+            for (var i = 0; i < bufferSize; i++)
+            {
+                if (bytes[i] != null)
+                    tempList.Add(bytes[i]);
+                else
+                    return tempList.ToArray().DeNullify();
+            }
+
+            return bytes.DeNullify();
         }
 
         private void ClearBuffer()
         {
-            for (var i = 0; i < BUFFER_SIZE; i ++)
+            for (var i = 0; i < bufferSize; i ++)
             {
                 bytes[i] = 0;
             }
@@ -123,6 +143,7 @@ namespace SockLibNG.Buffers
         }
 
         //NOTE: BitConverter class is .NET ONLY AFAIK. In order to be mono compliant, we need to use DataConvert located at http://www.mono-project.com/Mono_DataConvert
+        //TODO: Add mono support with DataConvert
         private static byte[] ConvertToByteArray(object primitive)
         {
             if (primitive is bool) return BitConverter.GetBytes((bool)primitive);
@@ -150,7 +171,7 @@ namespace SockLibNG.Buffers
         private bool GetBoolean()
         {
             if (!CheckBufferBoundaries(sizeof(bool))) throw new ConstraintException("Failed to get bool, reached end of buffer.");
-            var value =  BitConverter.ToBoolean(bytes, position);
+            var value =  BitConverter.ToBoolean(bytes.DeNullify(), position);
             position += sizeof(bool);
             return value;
         }
@@ -160,7 +181,7 @@ namespace SockLibNG.Buffers
             if (!CheckBufferBoundaries(sizeof(byte))) throw new ConstraintException("Failed to get byte, reached end of buffer.");
             var value = bytes[position];
             position += sizeof(byte);
-            return value;
+            return value.ToByte();
         }
 
         private sbyte GetSByte()
@@ -168,13 +189,13 @@ namespace SockLibNG.Buffers
             if (!CheckBufferBoundaries(sizeof(sbyte))) throw new ConstraintException("Failed to get sbyte, reached end of buffer.");
             var value = bytes[position];
             position += sizeof(sbyte);
-            return (sbyte)value;
+            return (sbyte)value.ToByte();
         }
 
         private char GetChar()
         {
             if (!CheckBufferBoundaries(sizeof(char))) throw new ConstraintException("Failed to get char, reached end of buffer.");
-            var value = BitConverter.ToChar(bytes, position);
+            var value = BitConverter.ToChar(bytes.DeNullify(), position);
             position += sizeof(char);
             return value;
         }
@@ -182,7 +203,7 @@ namespace SockLibNG.Buffers
         private double GetDouble()
         {
             if (!CheckBufferBoundaries(sizeof(double))) throw new ConstraintException("Failed to get double, reached end of buffer.");
-            var value = BitConverter.ToDouble(bytes, position);
+            var value = BitConverter.ToDouble(bytes.DeNullify(), position);
             position += sizeof(double);
             return value;
         }
@@ -190,7 +211,7 @@ namespace SockLibNG.Buffers
         private float GetFloat()
         {
             if (!CheckBufferBoundaries(sizeof(float))) throw new ConstraintException("Failed to get float, reached end of buffer.");
-            var value = BitConverter.ToSingle(bytes, position);
+            var value = BitConverter.ToSingle(bytes.DeNullify(), position);
             position += sizeof(float);
             return value;
         }
@@ -198,7 +219,7 @@ namespace SockLibNG.Buffers
         private int GetInt()
         {
             if (!CheckBufferBoundaries(sizeof(int))) throw new ConstraintException("Failed to get int, reached end of buffer.");
-            var value = BitConverter.ToInt32(bytes, position);
+            var value = BitConverter.ToInt32(bytes.DeNullify(), position);
             position += sizeof(int);
             return value;
         }
@@ -206,7 +227,7 @@ namespace SockLibNG.Buffers
         private uint GetUInt()
         {
             if (!CheckBufferBoundaries(sizeof(uint))) throw new ConstraintException("Failed to get uint, reached end of buffer.");
-            var value = BitConverter.ToUInt32(bytes, position);
+            var value = BitConverter.ToUInt32(bytes.DeNullify(), position);
             position += sizeof(uint);
             return value;
         }
@@ -214,7 +235,7 @@ namespace SockLibNG.Buffers
         private long GetLong()
         {
             if (!CheckBufferBoundaries(sizeof(long))) throw new ConstraintException("Failed to get long, reached end of buffer.");
-            var value = BitConverter.ToInt64(bytes, position);
+            var value = BitConverter.ToInt64(bytes.DeNullify(), position);
             position += sizeof(long);
             return value;
         }
@@ -222,7 +243,7 @@ namespace SockLibNG.Buffers
         private ulong GetULong()
         {
             if (!CheckBufferBoundaries(sizeof(ulong))) throw new ConstraintException("Failed to get ulong, reached end of buffer.");
-            var value = BitConverter.ToUInt64(bytes, position);
+            var value = BitConverter.ToUInt64(bytes.DeNullify(), position);
             position += sizeof(ulong);
             return value;
         }
@@ -230,7 +251,7 @@ namespace SockLibNG.Buffers
         private short GetShort()
         {
             if (!CheckBufferBoundaries(sizeof(short))) throw new ConstraintException("Failed to get short, reached end of buffer.");
-            var value = BitConverter.ToInt16(bytes, position);
+            var value = BitConverter.ToInt16(bytes.DeNullify(), position);
             position += sizeof(short);
             return value;
         }
@@ -238,7 +259,7 @@ namespace SockLibNG.Buffers
         private ushort GetUShort()
         {
             if (!CheckBufferBoundaries(sizeof(ushort))) throw new ConstraintException("Failed to get short, reached end of buffer.");
-            var value = BitConverter.ToUInt16(bytes, position);
+            var value = BitConverter.ToUInt16(bytes.DeNullify(), position);
             position += sizeof(ushort);
             return value;
         }
@@ -246,7 +267,7 @@ namespace SockLibNG.Buffers
         private string GetString()
         {
             var localPosition = -1;
-            for (var i = position; i <= BUFFER_SIZE; i++)
+            for (var i = position; i <= bufferSize; i++)
             {
                 if (bytes[i] == '\0')
                 {
@@ -257,7 +278,7 @@ namespace SockLibNG.Buffers
 
             if (localPosition != -1)
             {
-                var str =  new ASCIIEncoding().GetString(bytes, position, localPosition - position);
+                var str = new ASCIIEncoding().GetString(bytes.DeNullify(), position, localPosition - position);
                 position = localPosition + 1;
                 return str;
             }

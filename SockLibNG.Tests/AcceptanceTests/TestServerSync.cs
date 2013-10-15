@@ -45,7 +45,7 @@ namespace SockLibNG.Tests
         private void ReceiveTestMessage()
         {
             var bytesReceived = SockLib.ReceiveMessage(_client, _receiveBuffer);
-            MessageReceived(bytesReceived);
+            //MessageReceived(bytesReceived);
         }
 
         private void TcpAccepted(Socket socket)
