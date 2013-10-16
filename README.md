@@ -1,4 +1,4 @@
-SockLibNG
+AwesomeSocket
 =========
 
 Next generation of SockLib
