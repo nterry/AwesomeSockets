@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Odbc;
+using System.Linq;
 using System.Text;
 using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Exceptions;
@@ -46,15 +48,20 @@ namespace AwesomeSockets.Buffers
             buffer.FinalizeBuffer();
         }
 
+        public static void Add(Buffer buffer, Buffer bufferToWrite)
+        {
+            if (buffer == null || bufferToWrite == null) throw new ArgumentNullException("buffer");
+            buffer.ClearBuffer();
+            buffer = New();
+            buffer.Add(bufferToWrite.bytes.DeNullify());
+        }
+
         public static void Add(Buffer buffer, byte[] byteArray)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
+            if (byteArray.Length == 0) throw new DataException("Cannot provide a zero-length array");
             buffer.ClearBuffer();
-            foreach (var b in byteArray)
-            {
-                buffer.bytes[buffer.position] = b;
-                buffer.position += 1;
-            }
+            buffer.Add(byteArray);
             buffer.FinalizeBuffer();
         }
 
@@ -129,6 +136,16 @@ namespace AwesomeSockets.Buffers
             position = 0;
         }
 
+        private void Add(byte[] byteArray)
+        {
+            //var nulledArray = byteArray.Nullify(bufferSize);
+            foreach (var b in byteArray)
+            {
+                bytes[position] = b;
+                position += 1;
+            }
+        }
+
         private void Add(object primitive)
         {
             if (primitive == null) throw new ArgumentNullException("primitive");
@@ -162,7 +179,7 @@ namespace AwesomeSockets.Buffers
             {
                 var str = primitive as string;
                 if (str.Contains("\0")) throw new DataException("String cannot contain null character '\\0'");
-                return new ASCIIEncoding().GetBytes(str + "\0");    //The '\0' is to null-reminate the string so we can deserialize it on the other end as strings aren't fixed in size
+                return new ASCIIEncoding().GetBytes(string.Format("{0}{1}", str, "\0"));    //The '\0' is to null-reminate the string so we can deserialize it on the other end as strings aren't fixed in size
             }  
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
         }

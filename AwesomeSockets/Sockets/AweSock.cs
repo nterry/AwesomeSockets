@@ -10,9 +10,6 @@ using Buffer = AwesomeSockets.Buffers.Buffer;
 
 namespace AwesomeSockets.Sockets
 {
-    //Callback for NonBlocking TcpAccept thread
-    public delegate void SocketThreadCallback(Socket socket);
-
     public delegate void MessageThreadCallback(int bytes, EndPoint remoteEndpoint=null);
 
     public class AweSock
@@ -27,7 +24,7 @@ namespace AwesomeSockets.Sockets
             return listenSocket;
         }
 
-        public static Socket TcpAccept(Socket listenSocket, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
+        public static Socket TcpAccept(Socket listenSocket, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, Func<Socket, Exception, Socket> callback = null)
         {
             if (type == SocketCommunicationTypes.Blocking)
             {
@@ -38,7 +35,7 @@ namespace AwesomeSockets.Sockets
             return null;
         }
 
-        public static Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, SocketThreadCallback callback = null)
+        public static Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, Func<Socket, Exception, Socket> callback = null)
         {
             var connectSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             var ip = new IPAddress(ParseIpAddress(ipAddress));
@@ -126,16 +123,31 @@ namespace AwesomeSockets.Sockets
             socket.Close(timeout);
         }
 
-        private static void TcpAcceptThread(Socket listenSocket, SocketThreadCallback callback)
+        private static void TcpAcceptThread(Socket listenSocket, Func<Socket, Exception, Socket> callback)
         {
-            var clientSocket = listenSocket.Accept();
-            callback(clientSocket);
+            Socket clientSocket = null;
+            try
+            {
+                clientSocket = listenSocket.Accept();
+            }
+            catch (Exception ex)
+            {
+                callback(null, ex);
+            }
+            callback(clientSocket, null);
         }
 
-        private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, SocketThreadCallback callback)
+        private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, Func<Socket, Exception, Socket> callback)
         {
-            connectSocket.Connect(remoteEndpont);
-            callback(connectSocket);
+            try
+            {
+                connectSocket.Connect(remoteEndpont);
+            }
+            catch (Exception ex)
+            {
+                callback(null, ex);
+            }            
+            callback(connectSocket, null);
         }
 
         private static void MessageReceiveThread(Socket socket, Buffer buffer, MessageThreadCallback callback)

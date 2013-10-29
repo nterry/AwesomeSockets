@@ -46,6 +46,8 @@
     <Compile Include="Buffers\Buffer.cs" />
     <Compile Include="Domain\Exceptions\BufferFinalizedException.cs" />
     <Compile Include="Domain\Extensions.cs" />
+    <Compile Include="Domain\Sockets\AwesomeSocket.cs" />
+    <Compile Include="Domain\Sockets\ISocket.cs" />
     <Compile Include="Domain\Sockets\SocketCommunicationTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sockets\AweSock.cs" />

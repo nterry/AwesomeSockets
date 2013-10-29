@@ -19,17 +19,18 @@ namespace AwesomeSockets.Tests.AcceptanceTests
             _receiveBuffer = Buffer.New();
             _sendBuffer = Buffer.New();
 
-            AweSock.TcpConnect("127.0.0.1", 14804, SocketCommunicationTypes.NonBlocking, TcpConnected);
+            AweSock.TcpConnect("127.0.0.1", 14804, SocketCommunicationTypes.NonBlocking, (s, e) => TcpConnected(s));
             while (true)
             {
                 //Here so the main thread runs continuously.
             }
         }
 
-        private void TcpConnected(Socket socket)
+        private Socket TcpConnected(Socket socket)
         {
             _server = socket;
             AweSock.ReceiveMessage(_server, _receiveBuffer, SocketCommunicationTypes.NonBlocking, MessageReceived);
+            return null;
         }
 
         private void MessageReceived(int bytesReceived, EndPoint remoteEndpoint)
