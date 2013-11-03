@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 using AwesomeSockets.Domain;
@@ -138,11 +137,12 @@ namespace AwesomeSockets.Buffers
 
         private void Add(byte[] byteArray)
         {
-            //var nulledArray = byteArray.Nullify(bufferSize);
-            foreach (var b in byteArray)
+            for (var i = 0; i < bufferSize; i++)
             {
-                bytes[position] = b;
-                position += 1;
+                if (i < byteArray.Count())
+                    bytes[i] = byteArray[i];
+                else
+                    bytes[i] = null;
             }
         }
 
@@ -163,8 +163,21 @@ namespace AwesomeSockets.Buffers
         //TODO: Add mono support with DataConvert
         private static byte[] ConvertToByteArray(object primitive)
         {
+            switch (Runtime.GetRuntime())
+            {
+                case Runtimes.CLR:
+                    return ConvertToByteArrayClr(primitive);
+                case Runtimes.Mono:
+                    return ConvertToByteArrayMono(primitive);
+                default:
+                    throw new DataException("Running on unsupported platform.");
+            }
+        }
+
+        private static byte[] ConvertToByteArrayClr(object primitive)
+        {
             if (primitive is bool) return BitConverter.GetBytes((bool)primitive);
-            if (primitive is byte) return BitConverter.GetBytes((byte)primitive);
+            if (primitive is byte) return new[] { (byte)primitive }; //GetBytes casts a byte to a short resulting in a 2-byte array. We can just return the array with the byte in it.
             if (primitive is sbyte) return BitConverter.GetBytes((sbyte)primitive);
             if (primitive is char) return BitConverter.GetBytes((char)primitive);
             if (primitive is double) return BitConverter.GetBytes((double)primitive);
@@ -179,9 +192,14 @@ namespace AwesomeSockets.Buffers
             {
                 var str = primitive as string;
                 if (str.Contains("\0")) throw new DataException("String cannot contain null character '\\0'");
-                return new ASCIIEncoding().GetBytes(string.Format("{0}{1}", str, "\0"));    //The '\0' is to null-reminate the string so we can deserialize it on the other end as strings aren't fixed in size
-            }  
+                return new ASCIIEncoding().GetBytes(string.Format("{0}{1}", str, "\0"));    //The '\0' is to null-terminate the string so we can deserialize it on the other end as strings aren't fixed in size
+            }
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
+        }
+
+        private static byte[] ConvertToByteArrayMono(object primitive)
+        {
+            throw new NotImplementedException();
         }
 
         #region private getters
@@ -303,7 +321,7 @@ namespace AwesomeSockets.Buffers
         }
         #endregion
 
-
+        #region private boundary checks
         private bool CheckBufferBoundaries(byte[] bytesToCheck)
         {
             var roomLeft = bytes.Length - position;
@@ -315,5 +333,6 @@ namespace AwesomeSockets.Buffers
             var roomLeft = bytes.Length - position;
             return roomLeft >= numberOfBytes;
         }
+        #endregion
     }
 }

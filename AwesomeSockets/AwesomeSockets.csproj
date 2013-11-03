@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -46,6 +47,7 @@
     <Compile Include="Buffers\Buffer.cs" />
     <Compile Include="Domain\Exceptions\BufferFinalizedException.cs" />
     <Compile Include="Domain\Extensions.cs" />
+    <Compile Include="Domain\Runtime.cs" />
     <Compile Include="Domain\Sockets\AwesomeSocket.cs" />
     <Compile Include="Domain\Sockets\ISocket.cs" />
     <Compile Include="Domain\Sockets\SocketCommunicationTypes.cs" />

@@ -65,17 +65,17 @@ namespace AwesomeSockets.Tests.Buffers
             var testBuffer = CreateBuffer();
             Buffer.Add(testBuffer, new[] {(byte) 1});
 
-//            var otherTestBuffer = Buffer.New();
-//            Buffer.Add(otherTestBuffer, (byte) 1);
+            var otherTestBuffer = Buffer.New();
+            Buffer.Add(otherTestBuffer, (byte) 1);
 //
 //            Buffer.Add(otherTestBuffer, testBuffer);
-//            Buffer.FinalizeBuffer(otherTestBuffer);
+            Buffer.FinalizeBuffer(otherTestBuffer);
 
             var expected = Buffer.GetBuffer(testBuffer);
-            var actual = 0;
+            var actual = Buffer.GetBuffer(otherTestBuffer);
 //            var actual = Buffer.GetBuffer(otherTestBuffer);
 //
-//            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
