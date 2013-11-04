@@ -199,7 +199,15 @@ namespace AwesomeSockets.Buffers
 
         private static byte[] ConvertToByteArrayMono(object primitive)
         {
-            throw new NotImplementedException();
+            byte[] bytes = new byte[4];
+
+            bytes[0] = (byte)(primitive >> 24);
+            bytes[1] = (byte)(primitive >> 16);
+            bytes[2] = (byte)(primitive >> 8);
+            bytes[3] = (byte)primitive;
+
+            Console.WriteLine("{0} breaks down to : {1} {2} {3} {4}",
+                primitive, bytes[0], bytes[1], bytes[2], bytes[3]);
         }
 
         #region private getters
