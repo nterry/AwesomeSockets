@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Exceptions;
@@ -105,6 +106,12 @@ namespace AwesomeSockets.Buffers
             return buffer.GetBuffer();
         }
 
+        //Here for converting doubles and floats...
+        public static void BlockCopy(Array src, int srcOffset, Array dst, int dstOffset, int count)
+        {
+            System.Buffer.BlockCopy(src, srcOffset, dst, dstOffset, count);
+        }
+
         private byte[] GetBuffer()
         { 
             var tempList = new List<byte?>();
@@ -201,13 +208,16 @@ namespace AwesomeSockets.Buffers
         {
             byte[] bytes = new byte[4];
 
-            bytes[0] = (byte)(primitive >> 24);
-            bytes[1] = (byte)(primitive >> 16);
-            bytes[2] = (byte)(primitive >> 8);
+//            bytes[0] = (byte)(primitive >> 24);
+//            bytes[1] = (byte)(primitive >> 16);
+//            bytes[2] = (byte)(primitive >> 8);
             bytes[3] = (byte)primitive;
 
             Console.WriteLine("{0} breaks down to : {1} {2} {3} {4}",
                 primitive, bytes[0], bytes[1], bytes[2], bytes[3]);
+
+
+            return bytes;
         }
 
         #region private getters

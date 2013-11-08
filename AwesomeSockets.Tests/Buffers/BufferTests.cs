@@ -1,4 +1,5 @@
 ﻿using System;
+using AwesomeSockets.Domain;
 using NUnit.Framework;
 using AwesomeSockets.Domain.Exceptions;
 using Buffer = AwesomeSockets.Buffers.Buffer;
@@ -74,7 +75,24 @@ namespace AwesomeSockets.Tests.Buffers
             var expected = Buffer.GetBuffer(testBuffer);
             var actual = Buffer.GetBuffer(otherTestBuffer);
 //            var actual = Buffer.GetBuffer(otherTestBuffer);
-//
+
+            var foo = BitConverter.GetBytes(456566);
+            var newFoo = 456566.ToBytes();
+
+            var bar = BitConverter.GetBytes('n');
+            var newBar = 'n'.ToBytes();
+
+            var baz = BitConverter.GetBytes(1234.567789423456f);
+            var newBaz = 1234.567789423456f.ToBytes();
+
+            var quux = BitConverter.GetBytes(9876.34568934645634563467344536);
+            var newQuux = 9876.34568934645634563467344536.ToBytes();
+
+            Assert.AreEqual(foo, newFoo);
+            Assert.AreEqual(bar, newBar);
+            Assert.AreEqual(baz, newBaz);
+            Assert.AreEqual(quux, newQuux);
+
             Assert.AreEqual(expected, actual);
         }
 
