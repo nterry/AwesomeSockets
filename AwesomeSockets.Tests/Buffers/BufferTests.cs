@@ -3,6 +3,7 @@ using AwesomeSockets.Domain;
 using NUnit.Framework;
 using AwesomeSockets.Domain.Exceptions;
 using Buffer = AwesomeSockets.Buffers.Buffer;
+using Convert = AwesomeSockets.Domain.Convert;
 
 namespace AwesomeSockets.Tests.Buffers
 {
@@ -68,30 +69,29 @@ namespace AwesomeSockets.Tests.Buffers
 
             var otherTestBuffer = Buffer.New();
             Buffer.Add(otherTestBuffer, (byte) 1);
-//
-//            Buffer.Add(otherTestBuffer, testBuffer);
+
             Buffer.FinalizeBuffer(otherTestBuffer);
 
             var expected = Buffer.GetBuffer(testBuffer);
             var actual = Buffer.GetBuffer(otherTestBuffer);
-//            var actual = Buffer.GetBuffer(otherTestBuffer);
 
-            var foo = BitConverter.GetBytes(456566);
-            var newFoo = 456566.ToBytes();
+            var a = Convert.ToBytes('v');
+            var b = Convert.ToBytes(5647544);
+            var c = Convert.ToBytes((uint)34545);
+            //var b = Convert.ToBytes(674958623.495606F);
+            var df = Convert.ToBytes(3496705967534.3425096725648935);
 
-            var bar = BitConverter.GetBytes('n');
-            var newBar = 'n'.ToBytes();
+            var d = Convert.Get<char>(a);
+            var e = Convert.Get<int>(b);
+            var f = Convert.Get<uint>(c);
+            //var e = Convert.Get<float>(b);
+            var fd = Convert.Get<double>(df);
 
-            var baz = BitConverter.GetBytes(1234.567789423456f);
-            var newBaz = 1234.567789423456f.ToBytes();
-
-            var quux = BitConverter.GetBytes(9876.34568934645634563467344536);
-            var newQuux = 9876.34568934645634563467344536.ToBytes();
-
-            Assert.AreEqual(foo, newFoo);
-            Assert.AreEqual(bar, newBar);
-            Assert.AreEqual(baz, newBaz);
-            Assert.AreEqual(quux, newQuux);
+            Assert.AreEqual('v', d);
+            Assert.AreEqual(5647544, e);
+            Assert.AreEqual(34545, f);
+            //Assert.AreEqual(674958623.495606F, e);
+            //Assert.AreEqual(3496705967534.3425096725648935, f);
 
             Assert.AreEqual(expected, actual);
         }

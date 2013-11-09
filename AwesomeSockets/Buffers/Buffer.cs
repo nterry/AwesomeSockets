@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Security.Policy;
 using System.Text;
 using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Exceptions;
+using Convert = AwesomeSockets.Domain.Convert;
 
 namespace AwesomeSockets.Buffers
 {
@@ -88,10 +88,9 @@ namespace AwesomeSockets.Buffers
             if (typeof(T) == typeof(short)) return (T) (object) buffer.GetShort();
             if (typeof(T) == typeof(ushort)) return (T) (object) buffer.GetUShort();
             if (typeof(T) == typeof(string)) return (T) (object) buffer.GetString();
-            throw new DataException(string.Format("Provided type ({0}) cannot be serialized for transmission. You must provide a primitive or a string", typeof(T)));
+            throw new DataException(string.Format("Provided type ({0}) cannot be deserialized from buffer. You must provide a (except struct and enum) or a string", typeof(T)));
         }
 
-        //TODO: Need to add GetBuffer method that will return an array that just contains the payload witout the unfilled space at the end (if any)
         public static byte[] GetBuffer(Buffer buffer)
         {
            if (buffer == null) throw new ArgumentNullException("buffer");
@@ -157,7 +156,7 @@ namespace AwesomeSockets.Buffers
         {
             if (primitive == null) throw new ArgumentNullException("primitive");
             var array = ConvertToByteArray(primitive);
-            //TODO: Need to increase buffer size in this case, rather than throwing ans exception
+            //TODO: Need to increase buffer size in this case, rather than throwing an exception
             if (!CheckBufferBoundaries(array)) throw new ConstraintException("Failed to add primitive to buffer. There is no additional room for it.");
             foreach (var b in array)
             {
@@ -166,60 +165,31 @@ namespace AwesomeSockets.Buffers
             }
         }
 
-        //NOTE: BitConverter class is .NET ONLY AFAIK. In order to be mono compliant, we need to use DataConvert located at http://www.mono-project.com/Mono_DataConvert
-        //TODO: Add mono support with DataConvert
         private static byte[] ConvertToByteArray(object primitive)
         {
-            switch (Runtime.GetRuntime())
-            {
-                case Runtimes.CLR:
-                    return ConvertToByteArrayClr(primitive);
-                case Runtimes.Mono:
-                    return ConvertToByteArrayMono(primitive);
-                default:
-                    throw new DataException("Running on unsupported platform.");
-            }
-        }
-
-        private static byte[] ConvertToByteArrayClr(object primitive)
-        {
-            if (primitive is bool) return BitConverter.GetBytes((bool)primitive);
-            if (primitive is byte) return new[] { (byte)primitive }; //GetBytes casts a byte to a short resulting in a 2-byte array. We can just return the array with the byte in it.
-            if (primitive is sbyte) return BitConverter.GetBytes((sbyte)primitive);
-            if (primitive is char) return BitConverter.GetBytes((char)primitive);
-            if (primitive is double) return BitConverter.GetBytes((double)primitive);
-            if (primitive is float) return BitConverter.GetBytes((float)primitive);
-            if (primitive is int) return BitConverter.GetBytes((int)primitive);
-            if (primitive is uint) return BitConverter.GetBytes((uint)primitive);
-            if (primitive is long) return BitConverter.GetBytes((long)primitive);
-            if (primitive is ulong) return BitConverter.GetBytes((ulong)primitive);
-            if (primitive is short) return BitConverter.GetBytes((short)primitive);
-            if (primitive is ushort) return BitConverter.GetBytes((ushort)primitive);
+            if (primitive is bool) return Convert.ToBytes((bool) primitive);
+            if (primitive is byte) return Convert.ToBytes((byte) primitive);
+            if (primitive is sbyte) return Convert.ToBytes((sbyte) primitive);
+            if (primitive is char) return Convert.ToBytes((char) primitive);
+            if (primitive is double) return Convert.ToBytes((double) primitive);
+            if (primitive is float) return Convert.ToBytes((float) primitive);
+            if (primitive is int) return Convert.ToBytes((int) primitive);
+            if (primitive is uint) return Convert.ToBytes((uint) primitive);
+            if (primitive is long) return Convert.ToBytes((long) primitive);
+            if (primitive is ulong) return Convert.ToBytes((ulong) primitive);
+            if (primitive is short) return Convert.ToBytes((short) primitive);
+            if (primitive is ushort) return Convert.ToBytes((ushort) primitive);
             if (primitive is string)
             {
                 var str = primitive as string;
                 if (str.Contains("\0")) throw new DataException("String cannot contain null character '\\0'");
                 return new ASCIIEncoding().GetBytes(string.Format("{0}{1}", str, "\0"));    //The '\0' is to null-terminate the string so we can deserialize it on the other end as strings aren't fixed in size
             }
-            throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
+            throw new DataException("Provided type cannot be serialized for transmission. You must provide a value type (except enum and struct) or a string");
         }
 
-        private static byte[] ConvertToByteArrayMono(object primitive)
-        {
-            byte[] bytes = new byte[4];
 
-//            bytes[0] = (byte)(primitive >> 24);
-//            bytes[1] = (byte)(primitive >> 16);
-//            bytes[2] = (byte)(primitive >> 8);
-            bytes[3] = (byte)primitive;
-
-            Console.WriteLine("{0} breaks down to : {1} {2} {3} {4}",
-                primitive, bytes[0], bytes[1], bytes[2], bytes[3]);
-
-
-            return bytes;
-        }
-
+        //TODO: Un-couple bitconverter
         #region private getters
         private bool GetBoolean()
         {
