@@ -14,28 +14,28 @@ namespace AwesomeSockets.Sockets
 
     public class AweSock
     {
-        public static Socket TcpListen(int port, int backlog = 10)
+        public static ISocket TcpListen(int port, int backlog = 10)
         {
             var listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             var ip = new IPAddress(new byte[] { 0, 0, 0, 0 });
             var localEndPoint = new IPEndPoint(ip, port);
             listenSocket.Bind(localEndPoint);
             listenSocket.Listen(backlog);
-            return listenSocket;
+            return new AwesomeSocket(listenSocket);
         }
 
-        public static Socket TcpAccept(Socket listenSocket, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, Func<Socket, Exception, Socket> callback = null)
+        public static ISocket TcpAccept(ISocket listenSocket, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, Func<ISocket, Exception, Socket> callback = null)
         {
             if (type == SocketCommunicationTypes.Blocking)
             {
-                return listenSocket.Accept();
+                return new AwesomeSocket(listenSocket.GetInternalSocket().Accept());
             }
             if (callback == null) throw new ArgumentNullException(string.Format("{0}=null; You must provide a valid callback when using the NonBlocking type", "callback"));
-            new Thread(() => TcpAcceptThread(listenSocket, callback)).Start();
+            new Thread(() => TcpAcceptThread(listenSocket.GetInternalSocket(), callback)).Start();
             return null;
         }
 
-        public static Socket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, Func<Socket, Exception, Socket> callback = null)
+        public static ISocket TcpConnect(string ipAddress, int port, SocketCommunicationTypes type = SocketCommunicationTypes.Blocking, Func<ISocket, Exception, Socket> callback = null)
         {
             var connectSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             var ip = new IPAddress(ParseIpAddress(ipAddress));
@@ -43,19 +43,24 @@ namespace AwesomeSockets.Sockets
             if (type == SocketCommunicationTypes.Blocking)
             {
                 connectSocket.Connect(remoteEndpoint);
-                return connectSocket;
+                return new AwesomeSocket(connectSocket);
             }
             if (callback == null) throw new ArgumentNullException(string.Format("{0}=null; You must provide a valid callback when using the NonBlocking type", "callback"));
             new Thread(() => TcpConnectThread(connectSocket, remoteEndpoint, callback)).Start();
             return null;
         }
 
-        public static Socket UdpConnect(int port)
+        public static ISocket UdpConnect(int port)
         {
             var udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             var localEndpoint = new IPEndPoint(IPAddress.Any, port);
             udpSocket.Bind(localEndpoint);
-            return udpSocket;
+            return new AwesomeSocket(udpSocket);
+        }
+
+        public static void SetSockOpt(ISocket socket, Dictionary<SocketOptionName, object> opts)
+        {
+            socket.SetGlobalConfiguration(opts);
         }
 
         public static int SendMessage(Socket socket, Buffer buffer)
@@ -123,7 +128,7 @@ namespace AwesomeSockets.Sockets
             socket.Close(timeout);
         }
 
-        private static void TcpAcceptThread(Socket listenSocket, Func<Socket, Exception, Socket> callback)
+        private static void TcpAcceptThread(Socket listenSocket, Func<ISocket, Exception, Socket> callback)
         {
             Socket clientSocket = null;
             try
@@ -134,10 +139,10 @@ namespace AwesomeSockets.Sockets
             {
                 callback(null, ex);
             }
-            callback(clientSocket, null);
+            callback(new AwesomeSocket(clientSocket), null);
         }
 
-        private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, Func<Socket, Exception, Socket> callback)
+        private static void TcpConnectThread(Socket connectSocket, EndPoint remoteEndpont, Func<ISocket, Exception, Socket> callback)
         {
             try
             {
@@ -147,7 +152,7 @@ namespace AwesomeSockets.Sockets
             {
                 callback(null, ex);
             }            
-            callback(connectSocket, null);
+            callback(new AwesomeSocket(connectSocket), null);
         }
 
         private static void MessageReceiveThread(Socket socket, Buffer buffer, MessageThreadCallback callback)

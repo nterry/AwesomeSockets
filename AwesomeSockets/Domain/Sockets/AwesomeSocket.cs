@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 
 namespace AwesomeSockets.Domain.Sockets
 {
     public class AwesomeSocket : ISocket
     {
-        private readonly Socket internalSocket;
+        internal readonly Socket InternalSocket;
 
-        private AwesomeSocket(AddressFamily addressFamily = AddressFamily.InterNetwork, SocketType socketType = SocketType.Stream)
+        internal AwesomeSocket(AddressFamily addressFamily = AddressFamily.InterNetwork, SocketType socketType = SocketType.Stream)
         {
-            internalSocket = new Socket(addressFamily, socketType, ProtocolType.IP);
+            InternalSocket = new Socket(addressFamily, socketType, ProtocolType.IP);
+            InternalSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
         }
 
-        public static AwesomeSocket New(SockType sockType = SockType.Tcp)
+        internal AwesomeSocket(Socket socket)
+        {
+            InternalSocket = socket;
+        }
+
+        internal static AwesomeSocket New(SockType sockType = SockType.Tcp)
         {
             switch (sockType)
             {
@@ -23,6 +27,24 @@ namespace AwesomeSockets.Domain.Sockets
                     return new AwesomeSocket(AddressFamily.InterNetwork, SocketType.Dgram);
                 default:
                     return new AwesomeSocket();
+            }
+        }
+
+        internal static AwesomeSocket New(Socket socket)
+        {
+            return new AwesomeSocket(socket);
+        }
+
+        public Socket GetInternalSocket()
+        {
+            return InternalSocket;
+        }
+
+        public void SetGlobalConfiguration(Dictionary<SocketOptionName, object> opts)
+        {
+            foreach (var opt in opts)
+            {
+                InternalSocket.SetSocketOption(SocketOptionLevel.Socket, opt.Key, opt.Value);
             }
         }
     }
