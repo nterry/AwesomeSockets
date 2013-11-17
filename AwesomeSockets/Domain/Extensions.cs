@@ -5,19 +5,19 @@ namespace AwesomeSockets.Domain
 {
     public static class Extensions
     {
-        public static byte ToByte(this byte? nullableByte)
+        internal static byte ToByte(this byte? nullableByte)
         {
             return nullableByte == null ? (byte)0 : nullableByte.Value;
         }
 
-        public static byte[] DeNullify(this byte?[] bytes)
+        internal static byte[] DeNullify(this byte?[] bytes)
         {
             return bytes.Select(ToByte).ToArray();
         }
 
 
         //TODO: This is broken..... Need to fix
-        public static byte?[] Nullify(this byte[] bytes, int minCheck)
+        internal static byte?[] Nullify(this byte[] bytes, int minCheck)
         {
             var zeroCount = 0;
             var nullMarker = 0;

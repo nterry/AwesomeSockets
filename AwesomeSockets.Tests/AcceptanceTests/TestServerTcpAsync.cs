@@ -9,7 +9,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 {
     class TestServerTcpAsync
     {
-        private Socket _client;
+        private ISocket _client;
 
         private readonly Buffer _receiveBuffer;
         private readonly Buffer _sendBuffer;
@@ -27,7 +27,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
             }
         }
 
-        private Socket ClientConnected(Socket clientSocket)
+        private Socket ClientConnected(ISocket clientSocket)
         {
             Console.WriteLine("Client has connected.");
             _client = clientSocket;

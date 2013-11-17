@@ -1,5 +1,4 @@
 ﻿using System;
-using AwesomeSockets.Domain;
 using NUnit.Framework;
 using AwesomeSockets.Domain.Exceptions;
 using Buffer = AwesomeSockets.Buffers.Buffer;
@@ -43,7 +42,7 @@ namespace AwesomeSockets.Tests.Buffers
             var testBuffer = Buffer.New();
             Buffer.Add(testBuffer, 4);
             Buffer.FinalizeBuffer(testBuffer);
-            var expected = BitConverter.GetBytes(4);
+            var expected = Convert.ToBytes(4);
             var actual = Buffer.GetBuffer(testBuffer);
             Assert.AreEqual(expected, actual);
         }
@@ -75,24 +74,6 @@ namespace AwesomeSockets.Tests.Buffers
             var expected = Buffer.GetBuffer(testBuffer);
             var actual = Buffer.GetBuffer(otherTestBuffer);
 
-            var a = Convert.ToBytes('v');
-            var b = Convert.ToBytes(5647544);
-            var c = Convert.ToBytes((uint)34545);
-            //var b = Convert.ToBytes(674958623.495606F);
-            var df = Convert.ToBytes(3496705967534.3425096725648935);
-
-            var d = Convert.Get<char>(a);
-            var e = Convert.Get<int>(b);
-            var f = Convert.Get<uint>(c);
-            //var e = Convert.Get<float>(b);
-            var fd = Convert.Get<double>(df);
-
-            Assert.AreEqual('v', d);
-            Assert.AreEqual(5647544, e);
-            Assert.AreEqual(34545, f);
-            //Assert.AreEqual(674958623.495606F, e);
-            //Assert.AreEqual(3496705967534.3425096725648935, f);
-
             Assert.AreEqual(expected, actual);
         }
 
@@ -114,8 +95,6 @@ namespace AwesomeSockets.Tests.Buffers
             var testBuffer = CreateValidBuffer();
             Assert.DoesNotThrow(() => Buffer.FinalizeBuffer(testBuffer));
         }
-
-
 
 
         private Buffer CreateValidBuffer()

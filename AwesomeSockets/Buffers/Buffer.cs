@@ -189,12 +189,11 @@ namespace AwesomeSockets.Buffers
         }
 
 
-        //TODO: Un-couple bitconverter
         #region private getters
         private bool GetBoolean()
         {
             if (!CheckBufferBoundaries(sizeof(bool))) throw new ConstraintException("Failed to get bool, reached end of buffer.");
-            var value =  BitConverter.ToBoolean(bytes.DeNullify(), position);
+            var value = Convert.Get<bool>(bytes.DeNullify());
             position += sizeof(bool);
             return value;
         }
@@ -218,23 +217,25 @@ namespace AwesomeSockets.Buffers
         private char GetChar()
         {
             if (!CheckBufferBoundaries(sizeof(char))) throw new ConstraintException("Failed to get char, reached end of buffer.");
-            var value = BitConverter.ToChar(bytes.DeNullify(), position);
+            var value = Convert.Get<char>(bytes.DeNullify());
             position += sizeof(char);
             return value;
         }
 
+        //TODO: This doesn't correctly deserialize
         private double GetDouble()
         {
             if (!CheckBufferBoundaries(sizeof(double))) throw new ConstraintException("Failed to get double, reached end of buffer.");
-            var value = BitConverter.ToDouble(bytes.DeNullify(), position);
+            var value = Convert.Get<Double>(bytes.DeNullify());
             position += sizeof(double);
             return value;
         }
 
+        //TODO: This doesn't correctly deserialize
         private float GetFloat()
         {
             if (!CheckBufferBoundaries(sizeof(float))) throw new ConstraintException("Failed to get float, reached end of buffer.");
-            var value = BitConverter.ToSingle(bytes.DeNullify(), position);
+            var value = Convert.Get<float>(bytes.DeNullify());
             position += sizeof(float);
             return value;
         }
@@ -242,7 +243,7 @@ namespace AwesomeSockets.Buffers
         private int GetInt()
         {
             if (!CheckBufferBoundaries(sizeof(int))) throw new ConstraintException("Failed to get int, reached end of buffer.");
-            var value = BitConverter.ToInt32(bytes.DeNullify(), position);
+            var value = Convert.Get<int>(bytes.DeNullify());
             position += sizeof(int);
             return value;
         }
@@ -250,7 +251,7 @@ namespace AwesomeSockets.Buffers
         private uint GetUInt()
         {
             if (!CheckBufferBoundaries(sizeof(uint))) throw new ConstraintException("Failed to get uint, reached end of buffer.");
-            var value = BitConverter.ToUInt32(bytes.DeNullify(), position);
+            var value = Convert.Get<uint>(bytes.DeNullify());
             position += sizeof(uint);
             return value;
         }
@@ -258,7 +259,7 @@ namespace AwesomeSockets.Buffers
         private long GetLong()
         {
             if (!CheckBufferBoundaries(sizeof(long))) throw new ConstraintException("Failed to get long, reached end of buffer.");
-            var value = BitConverter.ToInt64(bytes.DeNullify(), position);
+            var value = Convert.Get<long>(bytes.DeNullify());
             position += sizeof(long);
             return value;
         }
@@ -266,7 +267,7 @@ namespace AwesomeSockets.Buffers
         private ulong GetULong()
         {
             if (!CheckBufferBoundaries(sizeof(ulong))) throw new ConstraintException("Failed to get ulong, reached end of buffer.");
-            var value = BitConverter.ToUInt64(bytes.DeNullify(), position);
+            var value = Convert.Get<ulong>(bytes.DeNullify());
             position += sizeof(ulong);
             return value;
         }
@@ -274,7 +275,7 @@ namespace AwesomeSockets.Buffers
         private short GetShort()
         {
             if (!CheckBufferBoundaries(sizeof(short))) throw new ConstraintException("Failed to get short, reached end of buffer.");
-            var value = BitConverter.ToInt16(bytes.DeNullify(), position);
+            var value = Convert.Get<short>(bytes.DeNullify());
             position += sizeof(short);
             return value;
         }
@@ -282,7 +283,7 @@ namespace AwesomeSockets.Buffers
         private ushort GetUShort()
         {
             if (!CheckBufferBoundaries(sizeof(ushort))) throw new ConstraintException("Failed to get short, reached end of buffer.");
-            var value = BitConverter.ToUInt16(bytes.DeNullify(), position);
+            var value = Convert.Get<ushort>(bytes.DeNullify());
             position += sizeof(ushort);
             return value;
         }

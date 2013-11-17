@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using System.Net.Sockets;
+using AwesomeSockets.Domain.Sockets;
 using AwesomeSockets.Sockets;
 using Buffer = AwesomeSockets.Buffers.Buffer;
 
@@ -8,7 +8,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 {
     class TestClientSync
     {
-        private Socket _server;
+        private ISocket _server;
 
         private readonly Buffer _sendBuffer;
         private readonly Buffer _receiveBuffer;
@@ -44,11 +44,11 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 
         private void ReceiveTestMessage()
         {
-            Tuple<int, EndPoint> bytesReceived = AweSock.ReceiveMessage(_server, _receiveBuffer);
+            var bytesReceived = AweSock.ReceiveMessage(_server, _receiveBuffer);
             MessageReceived(bytesReceived);
         }
 
-        private void TcpConnected(Socket socket)
+        private void TcpConnected(ISocket socket)
         {
             Console.WriteLine("Connected to server. Waiting for server to send message...");
             _server = socket;

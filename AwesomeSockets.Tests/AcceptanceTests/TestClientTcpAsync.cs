@@ -9,7 +9,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 {
     class TestClientTcpAsync
     {
-        private Socket _server;
+        private ISocket _server;
 
         private readonly Buffer _receiveBuffer;
         private readonly Buffer _sendBuffer;
@@ -26,7 +26,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
             }
         }
 
-        private Socket TcpConnected(Socket socket)
+        private Socket TcpConnected(ISocket socket)
         {
             _server = socket;
             AweSock.ReceiveMessage(_server, _receiveBuffer, SocketCommunicationTypes.NonBlocking, MessageReceived);

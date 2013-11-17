@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
+using Buffer = AwesomeSockets.Buffers.Buffer;
 
 namespace AwesomeSockets.Domain.Sockets
 {
@@ -35,9 +37,66 @@ namespace AwesomeSockets.Domain.Sockets
             return new AwesomeSocket(socket);
         }
 
-        public Socket GetInternalSocket()
+        public Socket GetSocket()
         {
             return InternalSocket;
+        }
+
+        public ISocket Accept()
+        {
+            return New(InternalSocket.Accept());
+        }
+
+        public void Connect(EndPoint remoteEndPoint)
+        {
+            InternalSocket.Connect(remoteEndPoint);
+        }
+
+        public int SendMessage(Buffer buffer)
+        {
+            return InternalSocket.Send(Buffer.GetBuffer(buffer));
+        }
+
+        public int SendMessage(string ip, int port, Buffer buffer)
+        {
+            var ipAddress = IPAddress.Parse(ip);
+            var remoteEndpoint = new IPEndPoint(ipAddress, port);
+            return InternalSocket.SendTo(Buffer.GetBuffer(buffer), remoteEndpoint);
+        }
+
+        public Tuple<int, EndPoint> ReceiveMessage(Buffer buffer)
+        {
+            return Tuple.Create(InternalSocket.Receive(Buffer.GetBufferRef(buffer)), InternalSocket.RemoteEndPoint);
+        }
+
+        public Tuple<int, EndPoint> ReceiveMessage(string ip, int port, Buffer buffer)
+        {
+            //EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+            return Tuple.Create(InternalSocket.ReceiveFrom(Buffer.GetBufferRef(buffer), ref remoteEndPoint), remoteEndPoint);
+        }
+
+        public EndPoint GetRemoteEndPoint()
+        {
+            return InternalSocket.RemoteEndPoint;
+        }
+
+        public ProtocolType GetProtocolType()
+        {
+            return InternalSocket.ProtocolType;
+        }
+
+        public int GetBytesAvailable()
+        {
+            return InternalSocket.Available;
+        }
+
+        public void Close(int timeout = 0)
+        {
+            if (timeout == 0) 
+                InternalSocket.Close();
+            else 
+                InternalSocket.Close(timeout);
         }
 
         public void SetGlobalConfiguration(Dictionary<SocketOptionName, object> opts)

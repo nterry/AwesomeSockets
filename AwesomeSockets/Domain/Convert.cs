@@ -5,8 +5,6 @@ using System.Text;
 
 namespace AwesomeSockets.Domain
 {
-
-    //TODO: Needs to be internal after all unit tests are appropriately written to use correct contract methods
     public class Convert
     {
         public static byte[] ToBytes(bool value)
@@ -21,7 +19,7 @@ namespace AwesomeSockets.Domain
 
         public static byte[] ToBytes(byte value)
         {
-            return new[] { value };
+            return new[] {  value };
         }
 
         public static byte[] ToBytes(char value)
