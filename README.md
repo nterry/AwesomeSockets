@@ -7,9 +7,9 @@ AwesomeSockets
 What is AwesomeSockets?
 -----------------------
 
-	AwesomeSockets is a C# library that facilitates network communication. It fully supports both synchronous 
-	and asynchronous communication. Callbacks for asynchronous calls can be provided as either a delegate or
-	as a lambda.
+	AwesomeSockets is a C# library that facilitates network communication. It fully supports both 
+	synchronous and asynchronous communication. Callbacks for asynchronous calls can be provided 
+	as either a delegate or as a lambda.
 	
 Documentation
 -------------
