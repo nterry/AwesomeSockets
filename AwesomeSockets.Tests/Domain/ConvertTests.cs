@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using Convert = AwesomeSockets.Domain.Convert;
 
 namespace AwesomeSockets.Tests.Domain
@@ -19,6 +20,8 @@ namespace AwesomeSockets.Tests.Domain
             var expectedUShort = new byte[] { 145, 30 };
             var expectedLong = new byte[] { 184, 53, 185, 194, 219, 6, 0, 0 };
             var expectedULong = new byte[] { 15, 246, 250, 107, 91, 163, 32, 109 };
+            var expectedFloat = new byte[] { 0, 64, 58, 71 };
+            var expectedDouble = new byte[] { 103, 3, 166, 185, 64, 31, 18, 60 };
 
             var actualSByte = Convert.ToBytes((sbyte) -91);
             var actualByte = Convert.ToBytes((byte) 45);
@@ -30,6 +33,8 @@ namespace AwesomeSockets.Tests.Domain
             var actualUShort = Convert.ToBytes((ushort) 7825);
             var actualLong = Convert.ToBytes(7540934522296);
             var actualULong = Convert.ToBytes((ulong) 7863464562437846543);
+            var actualFloat = Convert.ToBytes((float)4.768e4);
+            var actualDouble = Convert.ToBytes(2456e-22);
 
             Assert.AreEqual(expectedSByte, actualSByte);
             Assert.AreEqual(expectedByte, actualByte);
@@ -41,6 +46,8 @@ namespace AwesomeSockets.Tests.Domain
             Assert.AreEqual(expectedUShort, actualUShort);
             Assert.AreEqual(expectedLong, actualLong);
             Assert.AreEqual(expectedULong, actualULong);
+            Assert.AreEqual(expectedFloat, actualFloat);
+            Assert.AreEqual(expectedDouble, actualDouble);
         }
     }
 }

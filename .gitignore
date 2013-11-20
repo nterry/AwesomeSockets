@@ -81,9 +81,6 @@ publish
 # NuGet Packages Directory
 packages
 
-NuGet restore
-*.exe
-
 # Windows Azure Build Output
 csx
 *.build.csdef

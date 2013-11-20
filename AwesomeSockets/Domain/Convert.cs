@@ -173,20 +173,22 @@ namespace AwesomeSockets.Domain
             return System.Convert.ToChar((value[0] | value[1] << 8));
         }
 
-        //TODO: This is broken... Serialize works good, but de-serialize fails to return original value
         private static float GetFloat(byte[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length != sizeof(float)) throw new DataException("Provided data does not appear to be of type float");
-            return (float)System.Convert.ToDouble((value[0]) | (value[1] << 8) | (value[2] << 16) | (value[3] << 24));
+            var floatArray = new float[1];
+            Buffer.BlockCopy(value, 0, floatArray, 0, value.Length);
+            return floatArray[0];
         }
 
-        //TODO: This is broken... Serialize works good, but de-serialize fails to return original value
         private static double GetDouble(byte[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length != sizeof(double)) throw new DataException("Provided data does not appear to be of type double");
-            return System.Convert.ToDouble((value[0]) | (value[1] << 8) | (value[2] << 16) | (value[3] << 24));
+            var doubleArray = new double[1];
+            Buffer.BlockCopy(value, 0, doubleArray, 0, value.Length);
+            return doubleArray[0];
         }
 
         private static int GetInt(byte[] value)
