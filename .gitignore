@@ -110,4 +110,13 @@ UpgradeLog*.XML
 # Resharper stuff
 _ReSharper*
 
+# Sonar artifacts
+.sonar
+pom.xml
+sonar-project.properties
+
 *.nupkg
+*.nuspec
+!scripts/AwesomeSockets.dll.template.nuspec
+
+

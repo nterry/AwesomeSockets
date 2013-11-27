@@ -33,7 +33,6 @@ namespace AwesomeSockets.Domain
             return bytes;
         }
 
-        //TODO: This will bew converted to an exact string for serialization and char-wise compressed
         public static byte[] ToBytes(float value)
         {
             var floatArray = new[] { value };
@@ -43,12 +42,12 @@ namespace AwesomeSockets.Domain
             return byteArray;
         }
 
-        //TODO: This will bew converted to an exact string for serialization and char-wise compressed
         public static byte[] ToBytes(double value)
         {
             var doubleArray = new[] { value };
             var byteArray = new byte[sizeof(double)];
             Buffer.BlockCopy(doubleArray, 0, byteArray, 0, byteArray.Length);
+
             return byteArray;
         }
 
@@ -119,7 +118,7 @@ namespace AwesomeSockets.Domain
 
         public static T Get<T>(byte[] value)
         {
-            if (typeof (T) == typeof (bool)) return (T) (object) GetBool(value);
+            if (typeof(T) == typeof (bool)) return (T) (object) GetBool(value);
             if (typeof(T) == typeof(byte)) return (T)(object) GetByte(value);
             if (typeof(T) == typeof(sbyte)) return (T)(object) GetSByte(value);
             if (typeof(T) == typeof(char)) return (T)(object) GetChar(value);

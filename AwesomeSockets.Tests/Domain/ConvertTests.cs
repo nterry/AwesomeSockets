@@ -49,5 +49,49 @@ namespace AwesomeSockets.Tests.Domain
             Assert.AreEqual(expectedFloat, actualFloat);
             Assert.AreEqual(expectedDouble, actualDouble);
         }
+
+        [Test]
+        public void GetFloat_ReturnsCorrectFloat_WhenPowerIsHigh()
+        {
+            var expectedFloat = (float) 4e-32;
+            var epsilon = (float) 1e-36;
+
+            var actualFloat = Convert.Get<float>(Convert.ToBytes(expectedFloat));
+
+            Assert.LessOrEqual(expectedFloat - actualFloat, epsilon); 
+        }
+
+        [Test]
+        public void GetFloat_ReturnsCorrectFloat_WhenPowerIsLow()
+        {
+            var expectedFloat = (float)4e4;
+            var epsilon = 1.0F;
+
+            var actualFloat = Convert.Get<float>(Convert.ToBytes(expectedFloat));
+
+            Assert.LessOrEqual(expectedFloat - actualFloat, epsilon);
+        }
+
+        [Test]
+        public void GetDouble_ReturnsCorrectDouble_WhenPowerIsHigh()
+        {
+            var expectedDouble = 4e64;
+            var epsilon = 1e-36;
+
+            var actualDouble = Convert.Get<double>(Convert.ToBytes(expectedDouble));
+
+            Assert.LessOrEqual(expectedDouble - actualDouble, epsilon);
+        }
+
+        [Test]
+        public void GetDouble_ReturnsCorrectDouble_WhenPowerIsLow()
+        {
+            var expectedDouble = 4e-2;
+            var epsilon = 1e-6;
+
+            var actualDouble = Convert.Get<double>(Convert.ToBytes(expectedDouble));
+
+            Assert.LessOrEqual(expectedDouble - actualDouble, epsilon);
+        }
     }
 }
