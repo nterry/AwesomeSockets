@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Exceptions;
+using Convert = AwesomeSockets.Domain.Convert;
 
 namespace AwesomeSockets.Buffers
 {
@@ -46,15 +48,20 @@ namespace AwesomeSockets.Buffers
             buffer.FinalizeBuffer();
         }
 
+        public static void Add(Buffer buffer, Buffer bufferToWrite)
+        {
+            if (buffer == null || bufferToWrite == null) throw new ArgumentNullException("buffer");
+            buffer.ClearBuffer();
+            buffer = New();
+            buffer.Add(bufferToWrite.bytes.DeNullify());
+        }
+
         public static void Add(Buffer buffer, byte[] byteArray)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
+            if (byteArray.Length == 0) throw new DataException("Cannot provide a zero-length array");
             buffer.ClearBuffer();
-            foreach (var b in byteArray)
-            {
-                buffer.bytes[buffer.position] = b;
-                buffer.position += 1;
-            }
+            buffer.Add(byteArray);
             buffer.FinalizeBuffer();
         }
 
@@ -81,10 +88,9 @@ namespace AwesomeSockets.Buffers
             if (typeof(T) == typeof(short)) return (T) (object) buffer.GetShort();
             if (typeof(T) == typeof(ushort)) return (T) (object) buffer.GetUShort();
             if (typeof(T) == typeof(string)) return (T) (object) buffer.GetString();
-            throw new DataException(string.Format("Provided type ({0}) cannot be serialized for transmission. You must provide a primitive or a string", typeof(T)));
+            throw new DataException(string.Format("Provided type ({0}) cannot be deserialized from buffer. You must provide a (except struct and enum) or a string", typeof(T)));
         }
 
-        //TODO: Need to add GetBuffer method that will return an array that just contains the payload witout the unfilled space at the end (if any)
         public static byte[] GetBuffer(Buffer buffer)
         {
            if (buffer == null) throw new ArgumentNullException("buffer");
@@ -97,6 +103,12 @@ namespace AwesomeSockets.Buffers
             if (buffer == null) throw new ArgumentNullException("buffer");
             buffer.ClearBuffer();
             return buffer.GetBuffer();
+        }
+
+        //Here for converting doubles and floats...
+        public static void BlockCopy(Array src, int srcOffset, Array dst, int dstOffset, int count)
+        {
+            System.Buffer.BlockCopy(src, srcOffset, dst, dstOffset, count);
         }
 
         private byte[] GetBuffer()
@@ -129,11 +141,22 @@ namespace AwesomeSockets.Buffers
             position = 0;
         }
 
+        private void Add(byte[] byteArray)
+        {
+            for (var i = 0; i < bufferSize; i++)
+            {
+                if (i < byteArray.Count())
+                    bytes[i] = byteArray[i];
+                else
+                    bytes[i] = null;
+            }
+        }
+
         private void Add(object primitive)
         {
             if (primitive == null) throw new ArgumentNullException("primitive");
             var array = ConvertToByteArray(primitive);
-            //TODO: Need to increase buffer size in this case, rather than throwing ans exception
+            //TODO: Need to increase buffer size in this case, rather than throwing an exception
             if (!CheckBufferBoundaries(array)) throw new ConstraintException("Failed to add primitive to buffer. There is no additional room for it.");
             foreach (var b in array)
             {
@@ -142,36 +165,35 @@ namespace AwesomeSockets.Buffers
             }
         }
 
-        //NOTE: BitConverter class is .NET ONLY AFAIK. In order to be mono compliant, we need to use DataConvert located at http://www.mono-project.com/Mono_DataConvert
-        //TODO: Add mono support with DataConvert
         private static byte[] ConvertToByteArray(object primitive)
         {
-            if (primitive is bool) return BitConverter.GetBytes((bool)primitive);
-            if (primitive is byte) return BitConverter.GetBytes((byte)primitive);
-            if (primitive is sbyte) return BitConverter.GetBytes((sbyte)primitive);
-            if (primitive is char) return BitConverter.GetBytes((char)primitive);
-            if (primitive is double) return BitConverter.GetBytes((double)primitive);
-            if (primitive is float) return BitConverter.GetBytes((float)primitive);
-            if (primitive is int) return BitConverter.GetBytes((int)primitive);
-            if (primitive is uint) return BitConverter.GetBytes((uint)primitive);
-            if (primitive is long) return BitConverter.GetBytes((long)primitive);
-            if (primitive is ulong) return BitConverter.GetBytes((ulong)primitive);
-            if (primitive is short) return BitConverter.GetBytes((short)primitive);
-            if (primitive is ushort) return BitConverter.GetBytes((ushort)primitive);
+            if (primitive is bool) return Convert.ToBytes((bool) primitive);
+            if (primitive is byte) return Convert.ToBytes((byte) primitive);
+            if (primitive is sbyte) return Convert.ToBytes((sbyte) primitive);
+            if (primitive is char) return Convert.ToBytes((char) primitive);
+            if (primitive is double) return Convert.ToBytes((double) primitive);
+            if (primitive is float) return Convert.ToBytes((float) primitive);
+            if (primitive is int) return Convert.ToBytes((int) primitive);
+            if (primitive is uint) return Convert.ToBytes((uint) primitive);
+            if (primitive is long) return Convert.ToBytes((long) primitive);
+            if (primitive is ulong) return Convert.ToBytes((ulong) primitive);
+            if (primitive is short) return Convert.ToBytes((short) primitive);
+            if (primitive is ushort) return Convert.ToBytes((ushort) primitive);
             if (primitive is string)
             {
                 var str = primitive as string;
                 if (str.Contains("\0")) throw new DataException("String cannot contain null character '\\0'");
-                return new ASCIIEncoding().GetBytes(str + "\0");    //The '\0' is to null-reminate the string so we can deserialize it on the other end as strings aren't fixed in size
-            }  
-            throw new DataException("Provided type cannot be serialized for transmission. You must provide a primitive or a string");
+                return new ASCIIEncoding().GetBytes(string.Format("{0}{1}", str, "\0"));    //The '\0' is to null-terminate the string so we can deserialize it on the other end as strings aren't fixed in size
+            }
+            throw new DataException("Provided type cannot be serialized for transmission. You must provide a value type (except enum and struct) or a string");
         }
+
 
         #region private getters
         private bool GetBoolean()
         {
             if (!CheckBufferBoundaries(sizeof(bool))) throw new ConstraintException("Failed to get bool, reached end of buffer.");
-            var value =  BitConverter.ToBoolean(bytes.DeNullify(), position);
+            var value = Convert.Get<bool>(bytes.DeNullify());
             position += sizeof(bool);
             return value;
         }
@@ -195,23 +217,25 @@ namespace AwesomeSockets.Buffers
         private char GetChar()
         {
             if (!CheckBufferBoundaries(sizeof(char))) throw new ConstraintException("Failed to get char, reached end of buffer.");
-            var value = BitConverter.ToChar(bytes.DeNullify(), position);
+            var value = Convert.Get<char>(bytes.DeNullify());
             position += sizeof(char);
             return value;
         }
 
+        //TODO: This doesn't correctly deserialize
         private double GetDouble()
         {
             if (!CheckBufferBoundaries(sizeof(double))) throw new ConstraintException("Failed to get double, reached end of buffer.");
-            var value = BitConverter.ToDouble(bytes.DeNullify(), position);
+            var value = Convert.Get<Double>(bytes.DeNullify());
             position += sizeof(double);
             return value;
         }
 
+        //TODO: This doesn't correctly deserialize
         private float GetFloat()
         {
             if (!CheckBufferBoundaries(sizeof(float))) throw new ConstraintException("Failed to get float, reached end of buffer.");
-            var value = BitConverter.ToSingle(bytes.DeNullify(), position);
+            var value = Convert.Get<float>(bytes.DeNullify());
             position += sizeof(float);
             return value;
         }
@@ -219,7 +243,7 @@ namespace AwesomeSockets.Buffers
         private int GetInt()
         {
             if (!CheckBufferBoundaries(sizeof(int))) throw new ConstraintException("Failed to get int, reached end of buffer.");
-            var value = BitConverter.ToInt32(bytes.DeNullify(), position);
+            var value = Convert.Get<int>(bytes.DeNullify());
             position += sizeof(int);
             return value;
         }
@@ -227,7 +251,7 @@ namespace AwesomeSockets.Buffers
         private uint GetUInt()
         {
             if (!CheckBufferBoundaries(sizeof(uint))) throw new ConstraintException("Failed to get uint, reached end of buffer.");
-            var value = BitConverter.ToUInt32(bytes.DeNullify(), position);
+            var value = Convert.Get<uint>(bytes.DeNullify());
             position += sizeof(uint);
             return value;
         }
@@ -235,7 +259,7 @@ namespace AwesomeSockets.Buffers
         private long GetLong()
         {
             if (!CheckBufferBoundaries(sizeof(long))) throw new ConstraintException("Failed to get long, reached end of buffer.");
-            var value = BitConverter.ToInt64(bytes.DeNullify(), position);
+            var value = Convert.Get<long>(bytes.DeNullify());
             position += sizeof(long);
             return value;
         }
@@ -243,7 +267,7 @@ namespace AwesomeSockets.Buffers
         private ulong GetULong()
         {
             if (!CheckBufferBoundaries(sizeof(ulong))) throw new ConstraintException("Failed to get ulong, reached end of buffer.");
-            var value = BitConverter.ToUInt64(bytes.DeNullify(), position);
+            var value = Convert.Get<ulong>(bytes.DeNullify());
             position += sizeof(ulong);
             return value;
         }
@@ -251,7 +275,7 @@ namespace AwesomeSockets.Buffers
         private short GetShort()
         {
             if (!CheckBufferBoundaries(sizeof(short))) throw new ConstraintException("Failed to get short, reached end of buffer.");
-            var value = BitConverter.ToInt16(bytes.DeNullify(), position);
+            var value = Convert.Get<short>(bytes.DeNullify());
             position += sizeof(short);
             return value;
         }
@@ -259,7 +283,7 @@ namespace AwesomeSockets.Buffers
         private ushort GetUShort()
         {
             if (!CheckBufferBoundaries(sizeof(ushort))) throw new ConstraintException("Failed to get short, reached end of buffer.");
-            var value = BitConverter.ToUInt16(bytes.DeNullify(), position);
+            var value = Convert.Get<ushort>(bytes.DeNullify());
             position += sizeof(ushort);
             return value;
         }
@@ -286,7 +310,7 @@ namespace AwesomeSockets.Buffers
         }
         #endregion
 
-
+        #region private boundary checks
         private bool CheckBufferBoundaries(byte[] bytesToCheck)
         {
             var roomLeft = bytes.Length - position;
@@ -298,5 +322,6 @@ namespace AwesomeSockets.Buffers
             var roomLeft = bytes.Length - position;
             return roomLeft >= numberOfBytes;
         }
+        #endregion
     }
 }

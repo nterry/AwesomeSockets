@@ -9,7 +9,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 {
     class TestServerTcpAsync
     {
-        private Socket _client;
+        private ISocket _client;
 
         private readonly Buffer _receiveBuffer;
         private readonly Buffer _sendBuffer;
@@ -20,19 +20,20 @@ namespace AwesomeSockets.Tests.AcceptanceTests
             _sendBuffer = Buffer.New();
             var listenSocket = AweSock.TcpListen(14804);
             Console.WriteLine("Server now listening on TCP port 14804");
-            AweSock.TcpAccept(listenSocket, SocketCommunicationTypes.NonBlocking, ClientConnected);
+            AweSock.TcpAccept(listenSocket, SocketCommunicationTypes.NonBlocking, (s, e) => ClientConnected(s));
             while (true)
             {
                 //Here so the main thread runs continuously
             }
         }
 
-        private void ClientConnected(Socket clientSocket)
+        private Socket ClientConnected(ISocket clientSocket)
         {
             Console.WriteLine("Client has connected.");
             _client = clientSocket;
             AweSock.ReceiveMessage(_client, _receiveBuffer, SocketCommunicationTypes.NonBlocking, MessageReceived);
             SendTestMessage();
+            return null;
         }
 
         private void MessageReceived(int bytesReceived, EndPoint remoteEndpoint)

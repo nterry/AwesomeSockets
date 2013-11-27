@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using System.Net.Sockets;
+using AwesomeSockets.Domain.Sockets;
 using AwesomeSockets.Sockets;
 using Buffer = AwesomeSockets.Buffers.Buffer;
 
@@ -8,7 +8,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 {
     class TestClientUdp
     {
-        private readonly Socket _localSocket;
+        private readonly ISocket _localSocket;
 
         private const int LocalUdpPort = 14806;
         private const int RemoteUdpPort = 14805;
