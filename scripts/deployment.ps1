@@ -41,4 +41,4 @@ Copy-Item "$artifactToUse\AwesomeSockets.dll" "$nugetStage\lib\Net40"
 $apiKey=$variables.Get_Item("SecureNugetKey")
 iex "$nugetFolder\NuGet.exe setapikey $apiKey"
 iex "$nugetFolder\NuGet.exe pack $nugetStage\AwesomeSockets.dll.nuspec"
-iex "$nugetFolder\NuGet.exe push $srcFolder\AwesomeSockets.dll.$projectVersion.nupkg"
+iex "$nugetFolder\NuGet.exe push $srcFolder\AwesomeSockets.$projectVersion.nupkg"
