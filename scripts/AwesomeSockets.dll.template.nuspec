@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>AwesomeSockets.dll</id>
+    <id>AwesomeSockets</id>
     <version>1.0.0</version>
     <authors>nicholasterry</authors>
     <owners>nicholasterry</owners>
