@@ -235,7 +235,6 @@ namespace AwesomeSockets.Domain
         private static string GetString(byte[] value)
         {
             var sb = new StringBuilder();
-            //var charArray = value.Select(x => (char) x).Aggregate((x, y) => sb.Append((char)x));
             foreach (var @char in value)
             {
                 sb.Append(@char);
