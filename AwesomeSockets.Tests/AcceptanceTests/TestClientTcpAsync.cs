@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Sockets;
 using AwesomeSockets.Sockets;
 using Buffer = AwesomeSockets.Buffers.Buffer;

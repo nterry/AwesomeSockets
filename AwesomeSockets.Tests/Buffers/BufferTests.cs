@@ -96,6 +96,14 @@ namespace AwesomeSockets.Tests.Buffers
             Assert.DoesNotThrow(() => Buffer.FinalizeBuffer(testBuffer));
         }
 
+        [Test]
+        public void EncryptBuffer_CorrectlyEncryptsBuffer_WithTheGivenStringAsTheKey()
+        {
+            var testBuffer = CreateValidBuffer();
+
+            Buffer.EncryptBuffer(testBuffer, "Foo", "Bar");
+        }
+
 
         private Buffer CreateValidBuffer()
         {

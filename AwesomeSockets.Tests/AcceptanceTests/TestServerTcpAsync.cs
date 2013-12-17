@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Sockets;
 using AwesomeSockets.Sockets;
 using System.Net.Sockets;

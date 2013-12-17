@@ -34,7 +34,7 @@ namespace AwesomeSockets.Tests.Domain
             var actualULong = Convert.ToBytes((ulong) 7863464562437846543);
             var actualFloat = Convert.ToBytes((float)4.768e4);
             var actualDouble = Convert.ToBytes(2456e-22);
-
+            
             Assert.AreEqual(expectedSByte, actualSByte);
             Assert.AreEqual(expectedByte, actualByte);
             Assert.AreEqual(expectedChar, actualChar);

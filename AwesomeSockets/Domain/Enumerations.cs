@@ -1,4 +1,4 @@
-﻿namespace AwesomeSockets.Domain.Sockets
+﻿namespace AwesomeSockets.Domain
 {
     public enum SockType
     {
@@ -10,5 +10,12 @@
     {
         Blocking,
         NonBlocking
+    }
+
+    public enum KeySizes
+    {
+        OneTwenyEight = 128,
+        OneNinetyTwo = 192,
+        TwoFiftySix = 256
     }
 }

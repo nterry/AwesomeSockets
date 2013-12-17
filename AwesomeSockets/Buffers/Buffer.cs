@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
+using System.Security.Cryptography;
 using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Exceptions;
 using Convert = AwesomeSockets.Domain.Convert;
+using KeySizes = AwesomeSockets.Domain.KeySizes;
 
 namespace AwesomeSockets.Buffers
 {
@@ -105,9 +106,19 @@ namespace AwesomeSockets.Buffers
             return buffer.GetBuffer();
         }
 
-        public static void EncryptBuffer(Buffer buffer, string encryptionKey)
+        public static void EncryptBuffer(Buffer buffer, string encryptionKey, string initVector)
         {
-            
+            const KeySizes keySize = KeySizes.TwoFiftySix;
+            const KeySizes ivSize = KeySizes.OneTwenyEight;
+            //TODO: Need to fix this to convert keysize from bits to bytes...
+//            var rijndael = new RijndaelManaged
+//            {
+//                KeySize = (int) keySize,
+//                Key = CreateCryptoKeyFromString(encryptionKey, keySize),
+//                IV = CreateCryptoKeyFromString(initVector, ivSize)
+//            };
+//
+//            var enc = rijndael.CreateEncryptor();
         }
 
         //Here for converting doubles and floats...
@@ -187,8 +198,11 @@ namespace AwesomeSockets.Buffers
             if (primitive is string)
             {
                 var str = primitive as string;
-                if (str.Contains("\0")) throw new DataException("String cannot contain null character '\\0'");
-                return new ASCIIEncoding().GetBytes(string.Format("{0}{1}", str, "\0"));    //The '\0' is to null-terminate the string so we can deserialize it on the other end as strings aren't fixed in size
+                if (str.Contains("\0")) throw new DataException("String cannot contain null character '\\0'");   
+                str = string.Format("{0}{1}", str, "\0");   //The '\0' is to null-terminate the string so we can deserialize it on the other end as strings aren't fixed in size
+                var strArray = new byte[str.Length * sizeof(char)];
+                System.Buffer.BlockCopy(str.ToCharArray(), 0, strArray, 0, strArray.Length);
+                return strArray;
             }
             throw new DataException("Provided type cannot be serialized for transmission. You must provide a value type (except enum and struct) or a string");
         }
@@ -305,9 +319,10 @@ namespace AwesomeSockets.Buffers
 
             if (localPosition != -1)
             {
-                var str = new ASCIIEncoding().GetString(bytes.DeNullify(), position, localPosition - position);
+                var chars = new char[bytes.Length / sizeof(char)];
+                System.Buffer.BlockCopy(bytes, localPosition, chars, 0, localPosition - position);
                 position = localPosition + 1;
-                return str;
+                return new string(chars);
             }
             throw new ConstraintException("Failed to get string, reached end of buffer.");
         }
@@ -329,29 +344,37 @@ namespace AwesomeSockets.Buffers
 
         #region private misc methods
 
-        private byte[] ConvertStringToByteArray(string stringToConvert)
+        private static byte[] CreateCryptoKeyFromString(string stringToConvert, KeySizes keySize)
         {
-            var initialConvert = new ASCIIEncoding().GetBytes(stringToConvert);
-            var sanitizedConvert = new byte[256];
+            var initialConvert = ConvertToByteArray(stringToConvert);
 
-            if (initialConvert.Length > 256)    //Truncate if greater than 256
-            {
-                sanitizedConvert = initialConvert.Take(256).ToArray();
-            }
+            byte[] sanitizedConvert;
+
+            if (initialConvert.Length > (int)keySize)    //Truncate if greater than 256
+                sanitizedConvert = initialConvert.Take((int)keySize).ToArray();
             else    //fill with repeats until 256
-            {
-                var rotatePosition = initialConvert.Length;
-                for (var i = 0; i < initialConvert.Length; i++)
-                    sanitizedConvert[i] = initialConvert[i];
-                do
-                {
-                    //TODO: Need to rotate around initialConvert, appending to sanitizedConvert along the way
-                } while (rotatePosition < 256);
-                sanitizedConvert = null;
-            }
+                RotateBytes(initialConvert, out sanitizedConvert);
 
-            throw new NotImplementedException();
+            return sanitizedConvert;
         }
+
+        private static void RotateBytes(byte[] source, out byte[] destination)
+        {
+            var localPostion = 0;
+            destination = new byte[256];
+            do
+            {
+                foreach (var b in source)
+                {
+                    if (localPostion < destination.Length)
+                        destination[localPostion] = b;
+                    else
+                        return;     //We have reached the end of the destination array and can short-circuit here
+                    localPostion += 1;
+                }
+            } while (localPostion < destination.Length);
+        }
+
         #endregion
     }
 }
