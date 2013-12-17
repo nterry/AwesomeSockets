@@ -105,6 +105,11 @@ namespace AwesomeSockets.Buffers
             return buffer.GetBuffer();
         }
 
+        public static void EncryptBuffer(Buffer buffer, string encryptionKey)
+        {
+            
+        }
+
         //Here for converting doubles and floats...
         public static void BlockCopy(Array src, int srcOffset, Array dst, int dstOffset, int count)
         {
@@ -222,7 +227,6 @@ namespace AwesomeSockets.Buffers
             return value;
         }
 
-        //TODO: This doesn't correctly deserialize
         private double GetDouble()
         {
             if (!CheckBufferBoundaries(sizeof(double))) throw new ConstraintException("Failed to get double, reached end of buffer.");
@@ -231,7 +235,6 @@ namespace AwesomeSockets.Buffers
             return value;
         }
 
-        //TODO: This doesn't correctly deserialize
         private float GetFloat()
         {
             if (!CheckBufferBoundaries(sizeof(float))) throw new ConstraintException("Failed to get float, reached end of buffer.");
@@ -321,6 +324,33 @@ namespace AwesomeSockets.Buffers
         {
             var roomLeft = bytes.Length - position;
             return roomLeft >= numberOfBytes;
+        }
+        #endregion
+
+        #region private misc methods
+
+        private byte[] ConvertStringToByteArray(string stringToConvert)
+        {
+            var initialConvert = new ASCIIEncoding().GetBytes(stringToConvert);
+            var sanitizedConvert = new byte[256];
+
+            if (initialConvert.Length > 256)    //Truncate if greater than 256
+            {
+                sanitizedConvert = initialConvert.Take(256).ToArray();
+            }
+            else    //fill with repeats until 256
+            {
+                var rotatePosition = initialConvert.Length;
+                for (var i = 0; i < initialConvert.Length; i++)
+                    sanitizedConvert[i] = initialConvert[i];
+                do
+                {
+                    //TODO: Need to rotate around initialConvert, appending to sanitizedConvert along the way
+                } while (rotatePosition < 256);
+                sanitizedConvert = null;
+            }
+
+            throw new NotImplementedException();
         }
         #endregion
     }

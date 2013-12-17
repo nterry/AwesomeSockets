@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using Convert = AwesomeSockets.Domain.Convert;
 
 namespace AwesomeSockets.Tests.Domain
@@ -53,8 +52,8 @@ namespace AwesomeSockets.Tests.Domain
         [Test]
         public void GetFloat_ReturnsCorrectFloat_WhenPowerIsHigh()
         {
-            var expectedFloat = (float) 4e-32;
-            var epsilon = (float) 1e-36;
+            const float expectedFloat = (float) 4e-32;
+            const float epsilon = (float) 1e-36;
 
             var actualFloat = Convert.Get<float>(Convert.ToBytes(expectedFloat));
 
@@ -64,8 +63,8 @@ namespace AwesomeSockets.Tests.Domain
         [Test]
         public void GetFloat_ReturnsCorrectFloat_WhenPowerIsLow()
         {
-            var expectedFloat = (float)4e4;
-            var epsilon = 1.0F;
+            const float expectedFloat = (float)4e4;
+            const float epsilon = 1.0F;
 
             var actualFloat = Convert.Get<float>(Convert.ToBytes(expectedFloat));
 
@@ -75,8 +74,8 @@ namespace AwesomeSockets.Tests.Domain
         [Test]
         public void GetDouble_ReturnsCorrectDouble_WhenPowerIsHigh()
         {
-            var expectedDouble = 4e64;
-            var epsilon = 1e-36;
+            const double expectedDouble = 4e64;
+            const double epsilon = 1e-36;
 
             var actualDouble = Convert.Get<double>(Convert.ToBytes(expectedDouble));
 
@@ -86,8 +85,8 @@ namespace AwesomeSockets.Tests.Domain
         [Test]
         public void GetDouble_ReturnsCorrectDouble_WhenPowerIsLow()
         {
-            var expectedDouble = 4e-2;
-            var epsilon = 1e-6;
+            const double expectedDouble = 4e-2;
+            const double epsilon = 1e-6;
 
             var actualDouble = Convert.Get<double>(Convert.ToBytes(expectedDouble));
 
