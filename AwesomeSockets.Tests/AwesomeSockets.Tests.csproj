@@ -84,6 +84,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Type2Byte">
+      <HintPath>..\packages\Type2Byte.1.1.15\lib\Net40\Type2Byte.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\TestServerUdp.cs" />
@@ -91,7 +94,6 @@
     <Compile Include="AcceptanceTests\TestClientTcpAsync.cs" />
     <Compile Include="AcceptanceTests\TestServerTcpAsync.cs" />
     <Compile Include="Buffers\BufferTests.cs" />
-    <Compile Include="Domain\ConvertTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AcceptanceTests\TestClientSync.cs" />
