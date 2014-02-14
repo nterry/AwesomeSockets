@@ -14,6 +14,8 @@ namespace AwesomeSockets.Tests.AcceptanceTests
         private bool isServerThreadFinished = false;
         private bool isClientThreadFinished = false;
 
+        private bool didTestSucceed = false;
+
         [Test]
         public void TcpSynchronousAcceptanceTest()
         {
@@ -43,6 +45,8 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 
             //Sleep to allow the threads a chance to die
             Thread.Sleep(1000);
+
+            Assert.IsTrue(didTestSucceed);
         }
 
         #region Shared Methods
@@ -64,6 +68,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
         private void ServerThreadCallback(bool isSuccess)
         {
             isServerThreadFinished = true;
+            didTestSucceed = isSuccess;
         }
 
         private void ClientThreadCallback(bool isSuccess)
