@@ -89,14 +89,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AcceptanceTests\TestServerUdp.cs" />
-    <Compile Include="AcceptanceTests\TestClientUdp.cs" />
-    <Compile Include="AcceptanceTests\TestClientTcpAsync.cs" />
-    <Compile Include="AcceptanceTests\TestServerTcpAsync.cs" />
     <Compile Include="Buffers\BufferTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AcceptanceTests\TestClientSync.cs" />
     <Compile Include="AcceptanceTests\TcpSyncTests.cs" />
   </ItemGroup>
   <ItemGroup>
