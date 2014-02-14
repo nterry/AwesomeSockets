@@ -14,7 +14,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
         private bool isServerThreadFinished = false;
         private bool isClientThreadFinished = false;
 
-        private bool didTestSucceed = false;
+        private bool didTestSucceed = true;
 
         [Test]
         public void TcpSynchronousAcceptanceTest()
