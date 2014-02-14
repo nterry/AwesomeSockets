@@ -71,7 +71,6 @@ namespace AwesomeSockets.Domain.Sockets
 
         public Tuple<int, EndPoint> ReceiveMessage(string ip, int port, Buffer buffer)
         {
-            //EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
             EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             return Tuple.Create(InternalSocket.ReceiveFrom(Buffer.GetBufferRef(buffer), ref remoteEndPoint), remoteEndPoint);
         }

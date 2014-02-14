@@ -7,11 +7,18 @@
     <owners>nicholasterry</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
     <projectUrl>https://github.com/nterry/AwesomeSockets</projectUrl>
-    <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A fast, lightweight, and easy to use socket library for C#.</description>
-    <releaseNotes></releaseNotes>
-    <copyright>Copyright 2012 - 2013</copyright>
-    <tags>AwesomeSockets Awesome Sockets Sockets.net AweSock</tags>
+	<releaseNotes>Removed Apiary file as we are no longer using it
+Fixed dependencies
+Completely decoupled from Bitconverter thus making this library fully mono capable 
+		</releaseNotes>
+    <copyright>Copyright 2012 - 2014</copyright>
+    <tags>AwesomeSockets Awesome Sockets Sockets.net AweSock socklib winsock sock socks managedsockets managedsocket managedsock managed easy</tags>
+	<dependencies>
+		<group targetFramework=".NETFramework4.0">
+			<dependency id="Type2Byte" version="1.1" />
+		</group>
+    </dependencies>
   </metadata>
 </package>

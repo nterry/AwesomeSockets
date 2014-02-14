@@ -4,6 +4,7 @@ using System.Data;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Sockets;
 using Buffer = AwesomeSockets.Buffers.Buffer;
 
