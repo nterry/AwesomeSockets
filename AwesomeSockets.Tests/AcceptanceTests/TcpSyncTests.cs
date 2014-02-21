@@ -11,42 +11,37 @@ namespace AwesomeSockets.Tests.AcceptanceTests
     [TestFixture]
     class TcpSyncTests
     {
-        private bool isServerThreadFinished = false;
-        private bool isClientThreadFinished = false;
-
-        private bool didTestSucceed = false;
-
         [Test]
         public void TcpSynchronousAcceptanceTest()
         {
+            bool serverGood = false;
             Thread serverThread = new Thread(() => {
-                ServerThread(x => {
-                    ServerThreadCallback(x);
-                });
+                ServerThread(x => serverGood = x);
             });
 
+            bool clientGood = false;
             Thread clientThread = new Thread(() => {
-                ClientThread(x => {
-                    ClientThreadCallback(x);
-                });
+                ClientThread(x => clientGood = x);
             });
 
             clientThread.Start();
             serverThread.Start();
 
-            do
-            {
-                Thread.Sleep(1000);
-            } while (!isServerThreadFinished && !isClientThreadFinished);
-
-            //Politely ask both threads to stop before main thread dies and hard-aborts them
-            serverThread.Abort();
-            clientThread.Abort();
-
             //Sleep to allow the threads a chance to die
-            Thread.Sleep(1000);
+            bool serverCompleted = serverThread.Join(5000);
+            bool clientCompleted = clientThread.Join(5000);
 
-            Assert.IsTrue(didTestSucceed);
+            if (!(serverCompleted && clientCompleted))
+            {
+                //Politely ask both threads to stop before main thread dies and hard-aborts them
+                serverThread.Abort();
+                clientThread.Abort();
+                Assert.Fail("The threads never returned in the join");
+            }
+            else
+            {
+                Assert.IsTrue(clientGood && serverGood, "The client and server thread should have both been good");
+            }
         }
 
         #region Shared Methods
@@ -65,16 +60,6 @@ namespace AwesomeSockets.Tests.AcceptanceTests
             Console.WriteLine("Sent payload. {0} bytes written.", bytesSent);
         }
 
-        private void ServerThreadCallback(bool isSuccess)
-        {
-            isServerThreadFinished = true;
-            didTestSucceed = isSuccess;
-        }
-
-        private void ClientThreadCallback(bool isSuccess)
-        {
-            isClientThreadFinished = true;
-        }
         #endregion
 
         #region Server Methods
@@ -104,7 +89,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
                 else if (bytesReceived.Item1 == 0)
                     return false;
 
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
             } while (!SERVER_EXIT_FLAG);
             return true;
         }

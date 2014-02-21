@@ -84,9 +84,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Type2Byte">
-      <HintPath>..\packages\Type2Byte.1.1.15\lib\Net40\Type2Byte.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Buffers\BufferTests.cs" />
