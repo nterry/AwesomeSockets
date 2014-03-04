@@ -1,6 +1,3 @@
-<h3>***This library is currently broken and we are preparing an emergency fix. We apologize for any inconvenience and we will have it fixed as soon as possible***</h3>
-
-
 AwesomeSockets
 =========
 
