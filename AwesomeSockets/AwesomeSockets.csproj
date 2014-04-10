@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="Buffers\Buffer.cs" />
     <Compile Include="Domain\Exceptions\BufferFinalizedException.cs" />
+    <Compile Include="Domain\SocketModifiers\ISocketModifier.cs" />
+    <Compile Include="Domain\SocketModifiers\MulticastSocketModifier.cs" />
     <Compile Include="Domain\Sockets\AwesomeSocket.cs" />
     <Compile Include="Domain\Sockets\ISocket.cs" />
     <Compile Include="Domain\Enumerations.cs" />
