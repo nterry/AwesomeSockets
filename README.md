@@ -2,7 +2,7 @@ AwesomeSockets
 =========
 
 
-[![Build status](https://ci.appveyor.com/api/projects/status?id=smh77tfj8rbqsiuy)](https://ci.appveyor.com/project/awesomesockets)&nbsp;&nbsp;&nbsp;&nbsp;[![NuGet version](https://badge.fury.io/nu/AwesomeSockets.png)](http://badge.fury.io/nu/AwesomeSockets)
+[![Build status](https://ci.appveyor.com/api/projects/status/smh77tfj8rbqsiuy)](https://ci.appveyor.com/project/nterry/awesomesockets)&nbsp;&nbsp;&nbsp;&nbsp;[![NuGet version](https://badge.fury.io/nu/AwesomeSockets.png)](http://badge.fury.io/nu/AwesomeSockets)
 
 
 What is AwesomeSockets?
@@ -34,7 +34,7 @@ Once you've connected, you need to construct and populate at least two `Buffer` 
 	Buffer inBuf = Buffer.New();
 	Buffer outBuf = Buffer.New();
 	
-	//Lets send some data to the server! Make a `Buffer` object like so
+	//Lets send some data to the server! Make a Buffer object like so
 	Buffer.ClearBuffer(outBuf);
 	Buffer.Add(outBuf, 42);
 	Buffer.Add(outBuf, "Is the ultimate answer");
@@ -53,9 +53,16 @@ And thats it! The TcpAccept method will block until a connection comes in and re
 	//Non-blocking mode returns null
 	AweSock.TcpAccept("", 12, SocketCommunicationTypes.NonBlocking, (listenSocket, error) => { return null; });
 		
-As you can see, we provided the NonBlocking constant and a lambda as a callback when the connection is accepted. If the listensocket parameter above is null, the error field will have an exception, indicating failure. Conversely, if the listensocket isn't null, the error will be, indicating success.
+As you can see, we provided the NonBlocking constant and a lambda as a callback when the connection is accepted. If the listensocket parameter above is null, the error field will have an exception, indicating failure. Conversely, if the listensocket isn't null, the error will be, indicating success. This same pattern applies to TcpConnect as well.
 
-The same pattern applies to TcpConnect as well
+Udp is similar, but with one major difference; the connect logic is 'reversed' for the server side. Here is an example:
 
+	//Server-side code (5.6.7.8 is the ip of the client)
+	ISocket client = AweSock.UdpConnect('5.6.7.8', 14804);
+	
+	//Server-side code (1.2.3.4 is the ip of the server)
+	ISocket server = AweSock.UdpConnect('1.2.3.4', 14804);
+	
+Both ends must know the ip of the other player before hand. This is where Tcp can come in. You can establish an ephermeral Tcp socket and use the ISocket object to get each others Ip addresses. It is also worth noting, there is no ability to have blocking logic as Udp is stateless. Everything else is identical in usage to Tcp.
 
 If you have any additional questions, shoot me an email at nick.i.terry@gmail.com or message me on github @nterry. Additional documentation will be added as XML as needed.

@@ -1,4 +1,4 @@
-Param (
+<#Param (
     $variables = @{},   
     $artifacts = @{},
     $scriptPath,
@@ -42,3 +42,4 @@ $apiKey=$variables.Get_Item("SecureNugetKey")
 iex "$nugetFolder\NuGet.exe setapikey $apiKey"
 iex "$nugetFolder\NuGet.exe pack $nugetStage\AwesomeSockets.dll.nuspec"
 iex "$nugetFolder\NuGet.exe push $srcFolder\AwesomeSockets.$projectVersion.nupkg"
+#>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AwesomeSockets.Domain.SocketModifiers;
+using AwesomeSockets.Sockets;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -96,6 +98,11 @@ namespace AwesomeSockets.Domain.Sockets
                 InternalSocket.Close();
             else 
                 InternalSocket.Close(timeout);
+        }
+
+        public ISocket WithModifier<T>() where T : ISocketModifier, new()
+        {
+            return new WithModifierWrapper<T>().ApplyModifier(this);
         }
 
         public void SetGlobalConfiguration(Dictionary<SocketOptionName, object> opts)

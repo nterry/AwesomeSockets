@@ -7,10 +7,19 @@ using System.Threading;
 using AwesomeSockets.Domain;
 using AwesomeSockets.Domain.Sockets;
 using Buffer = AwesomeSockets.Buffers.Buffer;
+using AwesomeSockets.Domain.SocketModifiers;
 
 namespace AwesomeSockets.Sockets
 {
     public delegate void MessageThreadCallback(int bytes, EndPoint remoteEndpoint=null);
+
+    class WithModifierWrapper<T> where T : ISocketModifier, new()
+    {
+        public ISocket ApplyModifier(ISocket socket)
+        {
+            return new T().Apply(socket);
+        }
+    }
 
     public class AweSock
     {

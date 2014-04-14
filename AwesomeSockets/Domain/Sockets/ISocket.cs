@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AwesomeSockets.Domain.SocketModifiers;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -26,5 +27,7 @@ namespace AwesomeSockets.Domain.Sockets
         int GetBytesAvailable();
 
         void Close(int timeout = 0);
+
+        ISocket WithModifier<T>() where T : ISocketModifier, new();
     }
 }
