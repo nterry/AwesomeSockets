@@ -15,6 +15,7 @@ namespace AwesomeSockets.Domain.Sockets
         internal AwesomeSocket(AddressFamily addressFamily = AddressFamily.InterNetwork, SocketType socketType = SocketType.Stream)
         {
             InternalSocket = new Socket(addressFamily, socketType, ProtocolType.IP);
+            //TODO: Need to allow for this to be overridden
             InternalSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
         }
 

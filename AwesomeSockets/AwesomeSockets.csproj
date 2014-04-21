@@ -48,8 +48,13 @@
   <ItemGroup>
     <Compile Include="Buffers\Buffer.cs" />
     <Compile Include="Domain\Exceptions\BufferFinalizedException.cs" />
+    <Compile Include="Domain\Exceptions\CannotMulticastException.cs" />
+    <Compile Include="Domain\Exceptions\SocketModifierException.cs" />
+    <Compile Include="Domain\Extensions.cs" />
+    <Compile Include="Domain\SocketModifiers\AbstractSocketModifier.cs" />
     <Compile Include="Domain\SocketModifiers\ISocketModifier.cs" />
     <Compile Include="Domain\SocketModifiers\MulticastSocketModifier.cs" />
+    <Compile Include="Domain\SocketModifiers\MulticastV6SocketModifier.cs" />
     <Compile Include="Domain\Sockets\AwesomeSocket.cs" />
     <Compile Include="Domain\Sockets\ISocket.cs" />
     <Compile Include="Domain\Enumerations.cs" />

@@ -67,6 +67,15 @@ namespace AwesomeSockets.Sockets
             return AwesomeSocket.New(udpSocket);
         }
 
+        //TODO: This is mainly for multicast sockets... Try to find a way to merge these two methods ^ v
+        public static ISocket UdpConnect(string ip, int port)
+        {
+            var udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            var remoteEndpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+            udpSocket.Connect(remoteEndpoint);
+            return AwesomeSocket.New(udpSocket);
+        }
+
         public static void SetSockOpt(ISocket socket, Dictionary<SocketOptionName, object> opts)
         {
             socket.SetGlobalConfiguration(opts);
@@ -78,6 +87,7 @@ namespace AwesomeSockets.Sockets
             return socket.SendMessage(buffer);
         }
 
+        //TODO: Merge these two methods with ip and port as optional params at the end ^ v
         public static int SendMessage(ISocket socket, string ip, int port, Buffer buffer)
         {
             if (socket.GetSocket().ProtocolType == ProtocolType.Tcp) throw new ConstraintException("Cannot call this method with a TCP socket. Call SendMessage(Socket, Buffer) instead.");
