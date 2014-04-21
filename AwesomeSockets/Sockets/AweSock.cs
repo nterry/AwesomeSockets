@@ -13,14 +13,6 @@ namespace AwesomeSockets.Sockets
 {
     public delegate void MessageThreadCallback(int bytes, EndPoint remoteEndpoint=null);
 
-    class WithModifierWrapper<T> where T : ISocketModifier, new()
-    {
-        public ISocket ApplyModifier(ISocket socket, params string[] args)
-        {
-            return new T().Apply(socket, args);
-        }
-    }
-
     public class AweSock
     {
         public static ISocket TcpListen(int port, int backlog = 10)

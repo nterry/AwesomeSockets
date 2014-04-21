@@ -7,6 +7,14 @@ using Buffer = AwesomeSockets.Buffers.Buffer;
 
 namespace AwesomeSockets.Domain.Sockets
 {
+    class WithModifierWrapper<T> where T : ISocketModifier, new()
+    {
+        public ISocket ApplyModifier(ISocket socket, params string[] args)
+        {
+            return new T().Apply(socket, args);
+        }
+    }
+
     public interface ISocket
     {
         void SetGlobalConfiguration(Dictionary<SocketOptionName, object> opts);

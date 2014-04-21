@@ -31,7 +31,7 @@ namespace AwesomeSockets.Domain.SocketModifiers
                 "IP address {0} cannot be multicasted! Please check the ip is in the 224.0.0.0/4 block and is a udp socket",
                 multicastIPAddress));
 
-            actualSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastIPAddress));
+            actualSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.AddMembership, new MulticastOption(multicastIPAddress)); //new MulticastOption(ip,IPAddress.Any)) for receiving? See http://www.codeproject.com/Articles/1705/IP-Multicasting-in-C for details
             actualSocket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, ttl);
             
             return socket;
