@@ -15,9 +15,9 @@ namespace AwesomeSockets.Sockets
 
     class WithModifierWrapper<T> where T : ISocketModifier, new()
     {
-        public ISocket ApplyModifier(ISocket socket)
+        public ISocket ApplyModifier(ISocket socket, params string[] args)
         {
-            return new T().Apply(socket);
+            return new T().Apply(socket, args);
         }
     }
 

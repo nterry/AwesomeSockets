@@ -8,6 +8,6 @@ namespace AwesomeSockets.Domain.SocketModifiers
 {
     public interface ISocketModifier
     {
-        ISocket Apply(ISocket socket);
+        ISocket Apply(ISocket socket, params string[] args);
     }
 }

@@ -100,9 +100,9 @@ namespace AwesomeSockets.Domain.Sockets
                 InternalSocket.Close(timeout);
         }
 
-        public ISocket WithModifier<T>() where T : ISocketModifier, new()
+        public ISocket WithModifier<T>(params string[] args) where T : ISocketModifier, new()
         {
-            return new WithModifierWrapper<T>().ApplyModifier(this);
+            return new WithModifierWrapper<T>().ApplyModifier(this, args);
         }
 
         public void SetGlobalConfiguration(Dictionary<SocketOptionName, object> opts)

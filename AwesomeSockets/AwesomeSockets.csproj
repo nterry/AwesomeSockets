@@ -53,6 +53,7 @@
     <Compile Include="Domain\Sockets\AwesomeSocket.cs" />
     <Compile Include="Domain\Sockets\ISocket.cs" />
     <Compile Include="Domain\Enumerations.cs" />
+    <Compile Include="Domain\Utils\IPAddressRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sockets\AweSock.cs" />
   </ItemGroup>

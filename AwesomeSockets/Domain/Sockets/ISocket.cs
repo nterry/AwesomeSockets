@@ -28,6 +28,6 @@ namespace AwesomeSockets.Domain.Sockets
 
         void Close(int timeout = 0);
 
-        ISocket WithModifier<T>() where T : ISocketModifier, new();
+        ISocket WithModifier<T>(params string[] args) where T : ISocketModifier, new();
     }
 }
