@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>AwesomeSockets</id>
-    <version>1.0.0</version>
+    <version>$id$</version>
     <authors>nicholasterry</authors>
     <owners>nicholasterry</owners>
     <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
