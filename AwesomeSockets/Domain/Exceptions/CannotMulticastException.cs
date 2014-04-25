@@ -12,5 +12,11 @@ namespace AwesomeSockets.Domain.Exceptions
         {
             //here just for chained constructor
         }
+
+        public CannotMulticastException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+            //here just for chained constructor
+        }
     }
 }

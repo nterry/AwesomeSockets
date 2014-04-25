@@ -14,12 +14,12 @@ namespace AwesomeSockets.Domain
 
         internal static bool CanMulticast(this Socket socket)
         {
-            IPEndPoint endpoint = (IPEndPoint)socket.RemoteEndPoint;
-            
+            //IPEndPoint endpoint = (IPEndPoint)socket.RemoteEndPoint;
+
             return ((socket.AddressFamily == AddressFamily.InterNetwork || socket.AddressFamily == AddressFamily.InterNetworkV6) &&
             (socket.ProtocolType == ProtocolType.Udp) &&
-            (socket.SocketType == SocketType.Dgram) &&
-            (IPAddressRange.CheckRange(lowerMulticastAddress, upperMulticastAddress, endpoint.Address)));
+            (socket.SocketType == SocketType.Dgram));// &&
+            //(IPAddressRange.CheckRange(lowerMulticastAddress, upperMulticastAddress, endpoint.Address)));
         }
     }
 }
