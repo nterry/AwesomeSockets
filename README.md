@@ -45,7 +45,7 @@ Once you've connected, you need to construct and populate at least two `Buffer` 
 	int bytesSent = AweSock.SendMessage(server, outBuf);
 	
 	//And receive any inbound messages as well
-	Tuple<int, Endpoint> received = AweSock.ReceiveMessage(server, inBuf);
+	Tuple<int, EndPoint> received = AweSock.ReceiveMessage(server, inBuf);
 
 	
 And thats it! The TcpAccept method will block until a connection comes in and returns the the connected `Socket`. If you want to have it non-blocking, we support that as well:
