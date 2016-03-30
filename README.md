@@ -2,7 +2,7 @@ AwesomeSockets
 =========
 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/smh77tfj8rbqsiuy)](https://ci.appveyor.com/project/nterry/awesomesockets)&nbsp;&nbsp;&nbsp;&nbsp;[![NuGet version](https://badge.fury.io/nu/AwesomeSockets.png)](http://badge.fury.io/nu/AwesomeSockets)
+[![Build status](https://ci.appveyor.com/api/projects/status/smh77tfj8rbqsiuy)](https://ci.appveyor.com/project/nterry/awesomesockets)&nbsp;&nbsp;&nbsp;&nbsp;[![Build Status](https://travis-ci.org/nterry/AwesomeSockets.svg?branch=master)](https://travis-ci.org/nterry/AwesomeSockets)&nbsp;&nbsp;&nbsp;&nbsp;[![NuGet version](https://badge.fury.io/nu/AwesomeSockets.png)](http://badge.fury.io/nu/AwesomeSockets)
 
 
 What is AwesomeSockets?
