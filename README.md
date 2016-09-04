@@ -60,7 +60,7 @@ Udp is similar, but with one major difference; the connect logic is 'reversed' f
 	//Server-side code (5.6.7.8 is the ip of the client)
 	ISocket client = AweSock.UdpConnect('5.6.7.8', 14804);
 	
-	//Server-side code (1.2.3.4 is the ip of the server)
+	//Client-side code (1.2.3.4 is the ip of the server)
 	ISocket server = AweSock.UdpConnect('1.2.3.4', 14804);
 	
 Both ends must know the ip of the other player before hand. This is where Tcp can come in. You can establish an ephermeral Tcp socket and use the ISocket object to get each others Ip addresses. It is also worth noting, there is no ability to have blocking logic as Udp is stateless. Everything else is identical in usage to Tcp.
