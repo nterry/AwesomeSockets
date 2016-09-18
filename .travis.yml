@@ -12,6 +12,6 @@ install:
   - mono .paket/paket.bootstrapper.exe
   - mono .paket/paket.exe install
 script: 
-  - echo xbuild /p:Configuration=Release AwesomeSockets.sln
+  - xbuild /p:Configuration=Release AwesomeSockets.sln
   - mono packages/NUnit.ConsoleRunner/tools/nunit3-console.exe AwesomeSockets.Tests/bin/Release/AwesomeSockets.Tests.dll
 
