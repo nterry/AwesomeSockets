@@ -120,3 +120,5 @@ sonar-project.properties
 !scripts/AwesomeSockets.dll.template.nuspec
 
 .nuget/NuGet.exe
+
+*.dg
