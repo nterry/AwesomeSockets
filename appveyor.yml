@@ -17,7 +17,7 @@ init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 before_build:
 - appveyor-retry dotnet restore -v Minimal
-- '$path = "C:\projects\awesomesockets\src\AwesomeSockets\project.json"; $version = {version}; (Get-Content $path) -replace ''"version":\s+"(\d+\.\d+\.\d+\.\d+(-\*)?)"'',"`"version`": `"$version`"" | out-file $path'
+- ps: '$path = "C:\projects\awesomesockets\src\AwesomeSockets\project.json"; (Get-Content $path) -replace ''"version":\s+"(\d+\.\d+\.\d+\.\d+(-\*)?)"'',"`"version`": `"%APPVEYOR_BUILD_VERSION%`"" | out-file $path'
 build_script:
 - dotnet build "src\AwesomeSockets" -c %CONFIGURATION%
 after_build:
