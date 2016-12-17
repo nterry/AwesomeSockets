@@ -120,10 +120,3 @@ sonar-project.properties
 !scripts/AwesomeSockets.dll.template.nuspec
 
 .nuget/NuGet.exe
-.paket/paket.bootstrapper.exe
-.paket/paket.exe
-
-# Jetbrains Rider project files
-.idea/
-*.iml
-

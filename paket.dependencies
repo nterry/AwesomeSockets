@@ -1,5 +1,0 @@
-source https://api.nuget.org/v3/index.json
-
-nuget NuGet.CommandLine
-nuget NUnit 3.4.1 framework: >= net40
-nuget NUnit.Runners 3.4.1 framework: >= net40
