@@ -5,12 +5,14 @@ assembly_info:
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
-configuration:
-- Release
+configuration: Release
 platform: Any CPU
 environment:
   # Don't report back to the mothership
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
+build:
+  publish_nuget: true             # package projects with .nuspec files and push to artifacts
+  publish_nuget_symbols: false
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 before_build:
@@ -23,8 +25,8 @@ after_build:
 test_script:
 - dotnet test "test\AwesomeSockets.Tests" -c %CONFIGURATION%
 - dotnet test "test\AwesomeSockets.Acceptance.Tests" -c %CONFIGURATION%
-#artifacts:
-#- path: artifacts\**\*.*
+artifacts:
+- path: artifacts\**\*.*
 cache:
 - '%USERPROFILE%\.nuget\packages'
 deploy:
@@ -32,4 +34,3 @@ deploy:
   api_key:
     secure: YYJVXyOvCQ0+eH0+nYybXRh3lxCdCXBcMMduj+YzdPmJWASjKMlkdu72BvW4Xksu
   skip_symbols: true
-  artifact: artifacts\**\*.nupkg
