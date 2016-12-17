@@ -1,0 +1,23 @@
+version: '2.0.0.{build}'
+configuration:
+- Release
+platform: Any CPU
+environment:
+  # Don't report back to the mothership
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+init:
+- ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
+before_build:
+- appveyor-retry dotnet restore -v Minimal
+build_script:
+- dotnet build "src\AwesomeSockets" -c %CONFIGURATION% --version-suffix %LABEL%
+after_build:
+- dotnet pack "src\AwesomeSockets" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
+- dotnet publish "src\AwesomeSockets" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts\AwesomeSockets
+test_script:
+- dotnet test "test\AwesomeSockets.Tests" -c %CONFIGURATION%
+- dotnet test "test\AwesomeSockets.Acceptance.Tests" -c %CONFIGURATION%
+artifacts:
+- path: artifacts\**\*.*
+cache:
+- '%USERPROFILE%\.nuget\packages'
