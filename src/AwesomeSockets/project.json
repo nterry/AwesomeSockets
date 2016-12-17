@@ -1,6 +1,6 @@
 ﻿{
   "name": "AwesomeSockets",
-  "version": "2.0.0-*",
+  "version": "2.0.0.0-*",
   "description": "A fast, lightweight, and easy-to-use socket library for C#.",
   "title": "Awesome Sockets",
   "copyright": "2013 - 2016 Nicholas Terry",
