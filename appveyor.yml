@@ -11,24 +11,21 @@ environment:
   # Don't report back to the mothership
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
 build:
-  publish_nuget: true             # package projects with .nuspec files and push to artifacts
+  publish_nuget: true
   publish_nuget_symbols: false
 init:
 - ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
 before_build:
 - appveyor-retry dotnet restore -v Minimal
 build_script:
-- dotnet build "src\AwesomeSockets" -c %CONFIGURATION% --version-suffix %LABEL%
+- dotnet build "src\AwesomeSockets" -c %CONFIGURATION%
 after_build:
-- dotnet pack "src\AwesomeSockets" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
-# - dotnet publish "src\AwesomeSockets" -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts\AwesomeSockets
+- dotnet pack "src\AwesomeSockets" -c %CONFIGURATION% --no-build -o artifacts
 test_script:
 - dotnet test "test\AwesomeSockets.Tests" -c %CONFIGURATION%
 - dotnet test "test\AwesomeSockets.Acceptance.Tests" -c %CONFIGURATION%
 artifacts:
 - path: artifacts\**\*.*
-cache:
-- '%USERPROFILE%\.nuget\packages'
 deploy:
   provider: NuGet
   api_key:
