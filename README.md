@@ -2,7 +2,7 @@ AwesomeSockets
 =========
 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/smh77tfj8rbqsiuy)](https://ci.appveyor.com/project/nterry/awesomesockets)&nbsp;&nbsp;&nbsp;&nbsp;[![Build Status](https://travis-ci.org/nterry/AwesomeSockets.svg?branch=master)](https://travis-ci.org/nterry/AwesomeSockets)&nbsp;&nbsp;&nbsp;&nbsp;[![NuGet version](https://badge.fury.io/nu/AwesomeSockets.png)](http://badge.fury.io/nu/AwesomeSockets)
+[![Build status](https://ci.appveyor.com/api/projects/status/smh77tfj8rbqsiuy)](https://ci.appveyor.com/project/nterry/awesomesockets)&nbsp;&nbsp;&nbsp;&nbsp;[![NuGet version](https://badge.fury.io/nu/AwesomeSockets.png)](http://badge.fury.io/nu/AwesomeSockets)
 
 
 What is AwesomeSockets?
@@ -34,7 +34,7 @@ Once you've connected, you need to construct and populate at least two `Buffer` 
 	Buffer inBuf = Buffer.New();
 	Buffer outBuf = Buffer.New();
 	
-	//Lets send some data to the server! Make a Buffer object like so
+	//Lets send some data to the server! Make a Buffer object and populate it with some data like so:
 	Buffer.ClearBuffer(outBuf);
 	Buffer.Add(outBuf, 42);
 	Buffer.Add(outBuf, "Is the ultimate answer");
@@ -44,7 +44,7 @@ Once you've connected, you need to construct and populate at least two `Buffer` 
 	//Now lets send it to the server!
 	int bytesSent = AweSock.SendMessage(server, outBuf);
 	
-	//And receive any inbound messages as well
+	//And receive any inbound messages as well. Received datga will be stored in inBuf. 
 	Tuple<int, EndPoint> received = AweSock.ReceiveMessage(server, inBuf);
 
 	
