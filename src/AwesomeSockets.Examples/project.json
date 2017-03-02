@@ -1,5 +1,5 @@
 ﻿{
-  "name": "AwesomeSockets",
+  "name": "AwesomeSockets.Examples",
   "version": "2.0.0.0-*",
   "description": "A fast, lightweight, and easy-to-use socket library for C#.",
   "title": "Awesome Sockets Examples",
@@ -8,6 +8,7 @@
   "language": "en-US",
   
   "dependencies": {
+      "AwesomeSockets": "2.0.0.0-*"
   },
 
   "frameworks": {

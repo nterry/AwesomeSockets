@@ -122,3 +122,8 @@ sonar-project.properties
 .nuget/NuGet.exe
 
 *.dg
+
+# Rider project files
+.idea/
+
+project.lock.json

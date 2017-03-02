@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Threading;
 using AwesomeSockets.Domain.Sockets;
 using AwesomeSockets.Sockets;
 using NUnit.Framework;
 using Buffer = AwesomeSockets.Buffers.Buffer;
-using System.Threading;
 
-namespace AwesomeSockets.Tests.AcceptanceTests
+namespace AwesomeSockets.Acceptance.Tests
 {
     [TestFixture]
     class TcpSyncTests
@@ -13,13 +13,13 @@ namespace AwesomeSockets.Tests.AcceptanceTests
         [Test]
         public void TcpSynchronousAcceptanceTest()
         {
-            bool serverGood = false;
-            Thread serverThread = new Thread(() => {
+            var serverGood = false;
+            var serverThread = new Thread(() => {
                 ServerThread(x => serverGood = x);
             });
 
-            bool clientGood = false;
-            Thread clientThread = new Thread(() => {
+            var clientGood = false;
+            var clientThread = new Thread(() => {
                 ClientThread(x => clientGood = x);
             });
 
@@ -27,8 +27,8 @@ namespace AwesomeSockets.Tests.AcceptanceTests
             serverThread.Start();
 
             //Sleep to allow the threads a chance to die
-            bool serverCompleted = serverThread.Join(5000);
-            bool clientCompleted = clientThread.Join(5000);
+            var serverCompleted = serverThread.Join(5000);
+            var clientCompleted = clientThread.Join(5000);
 
             if (!(serverCompleted && clientCompleted))
             {
@@ -77,7 +77,7 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 
         private bool ReceiveResponseFromClient(ISocket client, Buffer recvBuffer)
         {
-            bool SERVER_EXIT_FLAG = false;
+            var serverExitFlag = false;
             do
             {
                 var bytesReceived = AweSock.ReceiveMessage(client, recvBuffer);
@@ -85,50 +85,57 @@ namespace AwesomeSockets.Tests.AcceptanceTests
                 {
                     if (!ValidateResponse(recvBuffer))
                         return false;
-                    SERVER_EXIT_FLAG = true;
+                    serverExitFlag = true;
                 }
                 else if (bytesReceived.Item1 == 0)
                     return false;
 
                 //Thread.Sleep(1000);
-            } while (!SERVER_EXIT_FLAG);
+            }
+            while (!serverExitFlag);
             return true;
         }
 
         private bool ValidateResponse(Buffer receiveBuffer)
         {
-            return ((Buffer.Get<int>(receiveBuffer) == 10) && (Buffer.Get<float>(receiveBuffer) == 20.0F) && (Buffer.Get<double>(receiveBuffer) == 40.0) && (Buffer.Get<char>(receiveBuffer) == 'A') &&
-                (Buffer.Get<string>(receiveBuffer) == "The quick brown fox jumped over the lazy dog") && (Buffer.Get<byte>(receiveBuffer) == ((byte)255)));
+            const float tolerance = 0.00001F;
+
+            return Buffer.Get<int>(receiveBuffer) == 10 &&
+                   Math.Abs(Buffer.Get<float>(receiveBuffer) - 20.0F) < tolerance &&
+                   Math.Abs(Buffer.Get<double>(receiveBuffer) - 40.0) < tolerance &&
+                   Buffer.Get<char>(receiveBuffer) == 'A' &&
+                   Buffer.Get<string>(receiveBuffer) == "The quick brown fox jumped over the lazy dog" &&
+                   Buffer.Get<byte>(receiveBuffer) == 255;
         }
 #endregion
 
 #region Client Methods
         public void ClientThread(Action<bool> callback)
         {
-            Buffer sendBuffer = Buffer.New();
-            Buffer recvBuffer = Buffer.New();
+            var sendBuffer = Buffer.New();
+            var recvBuffer = Buffer.New();
 
-            ISocket server = AweSock.TcpConnect("127.0.0.1", 14804);
+            var server = AweSock.TcpConnect("127.0.0.1", 14804);
 
             ReceiveMessageFromServer(server, recvBuffer);
             SendTestMessage(server, sendBuffer);
             callback(true);
         }
 
-        private bool ReceiveMessageFromServer(ISocket server, Buffer recvBuffer)
+        private void ReceiveMessageFromServer(ISocket server, Buffer recvBuffer)
         {
-            bool CLIENT_EXIT_FLAG = false;
+            var clientExitFlag = false;
             do
             {
                 var bytesReceived = AweSock.ReceiveMessage(server, recvBuffer);
                 if (bytesReceived.Item1 > 0)
-                    CLIENT_EXIT_FLAG = true;
+                    clientExitFlag = true;
                 else if (bytesReceived.Item1 == 0)
-                    return false;
+                    return;
 
                 Thread.Sleep(1000);
-            } while (!CLIENT_EXIT_FLAG);
-            return true;
+            }
+            while (!clientExitFlag);
         }
 #endregion
     }

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AwesomeSockets")]
+[assembly: AssemblyProduct("AwesomeSockets.Examples")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -14,5 +14,7 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f5060b15-bda3-455b-934e-059e58ba7245")]
+
+[assembly: Guid("7EF94908-062F-4A5A-8ECA-79B8DDB60289")]

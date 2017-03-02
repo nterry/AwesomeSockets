@@ -18,7 +18,7 @@ Documentation
 Using AwesomeSockets is very easy! There are two main object types, the `Buffer` and the `Socket`. The `Buffer` is a vehicle to hold the data, and the `Socket` is responsible for sending/receiving the data. All the major public methods are static, meaning you call them on the class like so:
 
 	
-	Buffer inBuf = Buffer.new();
+	Buffer inBuf = Buffer.New();
 	
 In order to send a message, you must first connect to them:
 

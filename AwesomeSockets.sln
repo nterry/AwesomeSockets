@@ -19,6 +19,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AwesomeSockets.Tests", "tes
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AwesomeSockets.Acceptance.Tests", "test\AwesomeSockets.Acceptance.Tests\AwesomeSockets.Acceptance.Tests.xproj", "{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwesomeSockets.Examples", "src\AwesomeSockets.Examples\AwesomeSockets.Examples.csproj", "{7EF94908-062F-4A5A-8ECA-79B8DDB60289}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EF94908-062F-4A5A-8ECA-79B8DDB60289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EF94908-062F-4A5A-8ECA-79B8DDB60289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EF94908-062F-4A5A-8ECA-79B8DDB60289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EF94908-062F-4A5A-8ECA-79B8DDB60289}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,5 +51,6 @@ Global
 		{F5060B15-BDA3-455B-934E-059E58BA7245} = {A2BC4DF3-E80C-4E17-AAF9-3D8E14CB3443}
 		{C9E5EB0F-88F2-4AA5-94AF-97DCB212F573} = {CC94C280-C82C-487E-A058-E24D6DC65769}
 		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23} = {CC94C280-C82C-487E-A058-E24D6DC65769}
+		{7EF94908-062F-4A5A-8ECA-79B8DDB60289} = {A2BC4DF3-E80C-4E17-AAF9-3D8E14CB3443}
 	EndGlobalSection
 EndGlobal
