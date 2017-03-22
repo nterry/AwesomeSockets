@@ -7,11 +7,12 @@
 
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>a69ad75f-4f7a-4248-9b5f-0c5a72ed5e23</ProjectGuid>
-    <RootNamespace>AwesomeSockets.Acceptance.Tests</RootNamespace>
+    <ProjectGuid>{5ECD5F6F-DD3C-4CBA-BEA0-26E2116A78D1}</ProjectGuid>
+    <ProjectTypeGuids>{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}</ProjectTypeGuids>
+    <RootNamespace>AwesomeSockets.Model</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
   </PropertyGroup>
 
   <PropertyGroup>

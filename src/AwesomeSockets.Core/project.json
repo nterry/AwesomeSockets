@@ -1,0 +1,56 @@
+﻿{
+    "name": "AwesomeSockets.Core",
+    "version": "3.0.0-*",
+    "description": "AwesomeSockets core components.",
+    "title": "AwesomeSockets core components.",
+    "copyright": "2013 - 2017 Nicholas Terry",
+    "authors": ["Nicholas Terry"],
+    "language": "en-US",
+
+    "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "AwesomeSockets.Interfaces": "3.0.0-*"
+    },
+
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        },
+
+        "net20": { }
+    },
+
+    "buildOptions": {
+        "platform": "AnyCpu"
+    },
+
+    "packOptions": {
+        "summary": "",
+        "tags": [
+            "AwesomeSockets",
+            "Awesome",
+            "Sockets",
+            "Sockets.net",
+            "AweSock",
+            "socklib",
+            "winsock",
+            "sock",
+            "socks",
+            "managedsockets",
+            "managedsocket",
+            "managedsock",
+            "managed",
+            "easy"
+        ],
+
+        "owners": ["Nicholas Terry"],
+        "releaseNotes": "Migrated to .NET Core 1.0 with .NET 4.0 support",
+        "projectUrl": "https://github.com/nterry/AwesomeSockets",
+        "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        "requireLicenseAcceptance": false,
+        "repository": {
+            "type": "git",
+            "url": "git@github.com:nterry/AwesomeSockets.git"
+        }
+    }
+}
