@@ -1,23 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A2BC4DF3-E80C-4E17-AAF9-3D8E14CB3443}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwesomeSockets", "AwesomeSockets\AwesomeSockets.csproj", "{B0CC04F2-1125-47F0-8119-273A5BE618B3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DF1EBAD3-94E5-40EF-B487-7CFE8DBF04D2}"
-	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-		global.json = global.json
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwesomeSockets.UnitTests", "AwesomeSockets.UnitTests\AwesomeSockets.UnitTests.csproj", "{0363A737-D9DF-4EFC-A702-9B1CD9B7F3F5}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AwesomeSockets", "src\AwesomeSockets\AwesomeSockets.xproj", "{F5060B15-BDA3-455B-934E-059E58BA7245}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CC94C280-C82C-487E-A058-E24D6DC65769}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AwesomeSockets.Tests", "test\AwesomeSockets.Tests\AwesomeSockets.Tests.xproj", "{C9E5EB0F-88F2-4AA5-94AF-97DCB212F573}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AwesomeSockets.Acceptance.Tests", "test\AwesomeSockets.Acceptance.Tests\AwesomeSockets.Acceptance.Tests.xproj", "{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwesomeSockets.AcceptanceTests", "AwesomeSockets.AcceptanceTests\AwesomeSockets.AcceptanceTests.csproj", "{E889B617-788F-4E11-B5E6-43124C0AD827}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,25 +12,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F5060B15-BDA3-455B-934E-059E58BA7245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5060B15-BDA3-455B-934E-059E58BA7245}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5060B15-BDA3-455B-934E-059E58BA7245}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5060B15-BDA3-455B-934E-059E58BA7245}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9E5EB0F-88F2-4AA5-94AF-97DCB212F573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9E5EB0F-88F2-4AA5-94AF-97DCB212F573}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9E5EB0F-88F2-4AA5-94AF-97DCB212F573}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9E5EB0F-88F2-4AA5-94AF-97DCB212F573}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{F5060B15-BDA3-455B-934E-059E58BA7245} = {A2BC4DF3-E80C-4E17-AAF9-3D8E14CB3443}
-		{C9E5EB0F-88F2-4AA5-94AF-97DCB212F573} = {CC94C280-C82C-487E-A058-E24D6DC65769}
-		{A69AD75F-4F7A-4248-9B5F-0C5A72ED5E23} = {CC94C280-C82C-487E-A058-E24D6DC65769}
+		{B0CC04F2-1125-47F0-8119-273A5BE618B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0CC04F2-1125-47F0-8119-273A5BE618B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0CC04F2-1125-47F0-8119-273A5BE618B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0CC04F2-1125-47F0-8119-273A5BE618B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0363A737-D9DF-4EFC-A702-9B1CD9B7F3F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0363A737-D9DF-4EFC-A702-9B1CD9B7F3F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0363A737-D9DF-4EFC-A702-9B1CD9B7F3F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0363A737-D9DF-4EFC-A702-9B1CD9B7F3F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E889B617-788F-4E11-B5E6-43124C0AD827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E889B617-788F-4E11-B5E6-43124C0AD827}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E889B617-788F-4E11-B5E6-43124C0AD827}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E889B617-788F-4E11-B5E6-43124C0AD827}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

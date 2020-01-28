@@ -29,32 +29,27 @@ namespace AwesomeSockets.Buffers
         }
 
         #region public operation methods
-        public static Buffer New()
-        {
-            return New(DefaultBufferSize);
-        }
 
-        public static Buffer New(int bufferSize)
+        public static Buffer New(int bufferSize = DefaultBufferSize)
         {
             return new Buffer(bufferSize);
         }
 
-
         public static void ClearBuffer(Buffer buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException("buffer");
             buffer.ClearBuffer();
         }
 
         public static void FinalizeBuffer(Buffer buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException("buffer");
             buffer.FinalizeBuffer();
         }
 
         public static void Add(Buffer buffer, Buffer bufferToWrite)
         {
-            if (buffer == null || bufferToWrite == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null || bufferToWrite == null) throw new ArgumentNullException("buffer");
             buffer.ClearBuffer();
             buffer = New();
             buffer.Add(bufferToWrite._bytes);
@@ -62,7 +57,7 @@ namespace AwesomeSockets.Buffers
 
         public static void Add(Buffer buffer, byte[] byteArray)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException("buffer");
             if (byteArray.Length == 0) throw new InvalidOperationException("Cannot provide a zero-length array");
             buffer.ClearBuffer();
             buffer.Add(byteArray);
@@ -71,14 +66,14 @@ namespace AwesomeSockets.Buffers
 
         public static void Add(Buffer buffer, object value)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException("buffer");
             if (buffer._finalized) throw new InvalidOperationException("Buffer provided is in 'finalized' state. You must call 'ClearBuffer()' to reset it.");
             buffer.Add(value);
         }
 
         public static T Get<T>(Buffer buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException("buffer");
             if (typeof(T) == typeof(bool)) return (T)(object)buffer.GetBoolean();
             if (typeof(T) == typeof(byte)) return (T)(object)buffer.GetByte();
             if (typeof(T) == typeof(sbyte)) return (T)(object)buffer.GetSByte();
@@ -97,54 +92,17 @@ namespace AwesomeSockets.Buffers
 
         public static byte[] GetBuffer(Buffer buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException("buffer");
             if (!buffer._finalized) throw new InvalidOperationException("Buffer provided is not in 'finalized' state. You must call 'FinalizeBuffer()' in order to get the full buffer");
             return buffer.GetBuffer();
         }
 
         public static byte[] GetBufferRef(Buffer buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException("buffer");
             buffer.ClearBuffer();
             return buffer.GetBuffer();
         }
-
-        //public static void EncryptBuffer(Buffer buffer, string encryptionKey, string initVector, int keySize = (int)KeySizes.TwoFiftySix, int ivSize = (int)KeySizes.OneTwenyEight)
-        //{
-        //    var plaintextBytes = buffer.bytes;
-        //    var rijndaelEncryptor = buffer.CreateRijndael(encryptionKey, initVector, keySize, ivSize).CreateEncryptor();
-
-        //    MemoryStream mStream = new MemoryStream();
-        //    CryptoStream cStream = new CryptoStream(mStream, rijndaelEncryptor, CryptoStreamMode.Write);
-
-        //    cStream.Write(plaintextBytes, 0, plaintextBytes.Length);
-        //    cStream.FlushFinalBlock();
-
-        //    //buffer.SaveNullPosition();
-        //    Add(buffer, mStream.ToArray());
-
-        //    mStream.Close();
-        //    cStream.Close();
-        //}
-
-        //public static void DecryptBuffer(Buffer buffer, string decryptionKey, string initVector, int keySize = (int)KeySizes.TwoFiftySix, int ivSize = (int)KeySizes.OneTwenyEight)
-        //{
-        //    var cipherBytes = buffer.bytes;
-        //    var rijndaelDecryptor = buffer.CreateRijndael(decryptionKey, initVector, keySize, ivSize).CreateDecryptor();
-
-        //    MemoryStream mStream = new MemoryStream(cipherBytes);
-        //    CryptoStream cStream = new CryptoStream(mStream, rijndaelDecryptor, CryptoStreamMode.Read);
-
-        //    var plaintextBytes = new byte[cipherBytes.Length];
-
-        //    cStream.Read(plaintextBytes, 0, cipherBytes.Length);
-
-        //    Add(buffer, plaintextBytes);
-        //    //buffer.ApplyNullPosition();
-
-        //    mStream.Close();
-        //    cStream.Close();
-        //}
 
         public static Buffer Duplicate(Buffer bufferToDup)
         {
@@ -160,11 +118,9 @@ namespace AwesomeSockets.Buffers
 
         public override bool Equals(object obj)
         {
-            Buffer other = (Buffer)obj;
-            return ((_bufferSize == other._bufferSize) &&
-                    (_bytes.Equals(other._bytes)) &&
-                    (_position == other._position) &&
-                    (_finalized == other._finalized));
+            var other = (Buffer)obj;
+            return other != null && _bufferSize == other._bufferSize && _bytes.Equals(other._bytes) && 
+                   _position == other._position && _finalized == other._finalized;
         }
 
         public override int GetHashCode()
@@ -209,7 +165,7 @@ namespace AwesomeSockets.Buffers
 
         private void Add(object primitive)
         {
-            if (primitive == null) throw new ArgumentNullException(nameof(primitive));
+            if (primitive == null) throw new ArgumentNullException("primitive");
             var array = ConvertToByteArray(primitive);
             //TODO: Need to increase buffer size in this case, rather than throwing an exception
             if (!CheckBufferBoundaries(array)) throw new InvalidOperationException("Failed to add primitive to buffer. There is no additional room for it.");
@@ -378,50 +334,6 @@ namespace AwesomeSockets.Buffers
             var roomLeft = _bytes.Length - _position;
             return roomLeft >= numberOfBytes;
         }
-        #endregion
-
-        #region private misc methods
-//        private static byte[] CreateCryptoKeyFromString(string stringToConvert, int keySize)
-//        {
-//            var initialConvert = ConvertToByteArray(stringToConvert);
-//
-//            byte[] sanitizedConvert;
-//
-//            if (initialConvert.Length > keySize)    //Truncate if greater than 256
-//                sanitizedConvert = initialConvert.Take(keySize).ToArray();
-//            else    //fill with repeats until 256
-//                RotateBytes(initialConvert, keySize, out sanitizedConvert);
-//
-//            return sanitizedConvert;
-//        }
-
-        private static void RotateBytes(byte[] source, int keySize, out byte[] destination)
-        {
-            var localPostion = 0;
-            destination = new byte[keySize / 8];
-            do
-            {
-                foreach (var b in source)
-                {
-                    if (localPostion < destination.Length)
-                        destination[localPostion] = b;
-                    else
-                        return;     //We have reached the end of the destination array and can short-circuit here
-                    localPostion += 1;
-                }
-            } while (localPostion < destination.Length);
-        }
-
-//        private RijndaelManaged CreateRijndael(string encryptKey, string initVector, int keySize, int vectorSize)
-//        {
-//            return new RijndaelManaged
-//            {
-//                KeySize = keySize,
-//                Key = CreateCryptoKeyFromString(encryptKey, keySize),
-//                IV = CreateCryptoKeyFromString(initVector, vectorSize),
-//                Padding = PaddingMode.None
-//            };
-//        }
         #endregion
     }
 }

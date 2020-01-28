@@ -1,25 +1,25 @@
 ﻿using System;
+using System.Threading;
 using AwesomeSockets.Domain.Sockets;
 using AwesomeSockets.Sockets;
-using NUnit.Framework;
+using Xunit;
+using Xunit.Sdk;
 using Buffer = AwesomeSockets.Buffers.Buffer;
-using System.Threading;
 
-namespace AwesomeSockets.Tests.AcceptanceTests
+namespace AwesomeSockets.AcceptanceTests
 {
-    [TestFixture]
-    class TcpSyncTests
+    public class TcpSyncTests
     {
-        [Test]
+        [Fact]
         public void TcpSynchronousAcceptanceTest()
         {
-            bool serverGood = false;
-            Thread serverThread = new Thread(() => {
+            var serverGood = false;
+            var serverThread = new Thread(() => {
                 ServerThread(x => serverGood = x);
             });
 
-            bool clientGood = false;
-            Thread clientThread = new Thread(() => {
+            var clientGood = false;
+            var clientThread = new Thread(() => {
                 ClientThread(x => clientGood = x);
             });
 
@@ -27,26 +27,22 @@ namespace AwesomeSockets.Tests.AcceptanceTests
             serverThread.Start();
 
             //Sleep to allow the threads a chance to die
-            bool serverCompleted = serverThread.Join(5000);
-            bool clientCompleted = clientThread.Join(5000);
+            var serverCompleted = serverThread.Join(5000);
+            var clientCompleted = clientThread.Join(5000);
 
             if (!(serverCompleted && clientCompleted))
             {
                 //Politely ask both threads to stop before main thread dies and hard-aborts them
-#if NET40
                 serverThread.Abort();
                 clientThread.Abort();
-#endif
-                Assert.Fail("The threads never returned in the join");
+                throw new XunitException("The threads never returned in the join");
             }
-            else
-            {
-                Assert.IsTrue(clientGood && serverGood, "The client and server thread should have both been good");
-            }
+
+            Assert.True(clientGood && serverGood, "The client and server thread should have both been good");
         }
 
 #region Shared Methods
-        private void SendTestMessage(ISocket other, Buffer sendBuffer)
+        private static void SendTestMessage(ISocket other, Buffer sendBuffer)
         {
             Buffer.ClearBuffer(sendBuffer);
             Buffer.Add(sendBuffer, 10);
@@ -77,58 +73,57 @@ namespace AwesomeSockets.Tests.AcceptanceTests
 
         private bool ReceiveResponseFromClient(ISocket client, Buffer recvBuffer)
         {
-            bool SERVER_EXIT_FLAG = false;
+            var serverExitFlag = false;
             do
             {
-                var bytesReceived = AweSock.ReceiveMessage(client, recvBuffer);
-                if (bytesReceived.Item1 > 0)
+                var (item1, _) = AweSock.ReceiveMessage(client, recvBuffer);
+                if (item1 > 0)
                 {
                     if (!ValidateResponse(recvBuffer))
                         return false;
-                    SERVER_EXIT_FLAG = true;
+                    serverExitFlag = true;
                 }
-                else if (bytesReceived.Item1 == 0)
+                else if (item1 == 0)
                     return false;
 
                 //Thread.Sleep(1000);
-            } while (!SERVER_EXIT_FLAG);
+            } while (!serverExitFlag);
             return true;
         }
 
         private bool ValidateResponse(Buffer receiveBuffer)
         {
-            return ((Buffer.Get<int>(receiveBuffer) == 10) && (Buffer.Get<float>(receiveBuffer) == 20.0F) && (Buffer.Get<double>(receiveBuffer) == 40.0) && (Buffer.Get<char>(receiveBuffer) == 'A') &&
-                (Buffer.Get<string>(receiveBuffer) == "The quick brown fox jumped over the lazy dog") && (Buffer.Get<byte>(receiveBuffer) == ((byte)255)));
+            const float tolerance = 0.001F;
+            return Buffer.Get<int>(receiveBuffer) == 10 && Math.Abs(Buffer.Get<float>(receiveBuffer) - 20.0F) < tolerance && Math.Abs(Buffer.Get<double>(receiveBuffer) - 40.0) < tolerance && Buffer.Get<char>(receiveBuffer) == 'A' &&
+                   Buffer.Get<string>(receiveBuffer) == "The quick brown fox jumped over the lazy dog" && Buffer.Get<byte>(receiveBuffer) == 255;
         }
 #endregion
 
 #region Client Methods
-        public void ClientThread(Action<bool> callback)
+        private void ClientThread(Action<bool> callback)
         {
-            Buffer sendBuffer = Buffer.New();
-            Buffer recvBuffer = Buffer.New();
+            var sendBuffer = Buffer.New();
+            var recvBuffer = Buffer.New();
 
-            ISocket server = AweSock.TcpConnect("127.0.0.1", 14804);
+            var server = AweSock.TcpConnect("127.0.0.1", 14804);
 
             ReceiveMessageFromServer(server, recvBuffer);
             SendTestMessage(server, sendBuffer);
             callback(true);
         }
 
-        private bool ReceiveMessageFromServer(ISocket server, Buffer recvBuffer)
+        private static void ReceiveMessageFromServer(ISocket server, Buffer recvBuffer)
         {
-            bool CLIENT_EXIT_FLAG = false;
+            var clientExitFlag = false;
             do
             {
-                var bytesReceived = AweSock.ReceiveMessage(server, recvBuffer);
-                if (bytesReceived.Item1 > 0)
-                    CLIENT_EXIT_FLAG = true;
-                else if (bytesReceived.Item1 == 0)
-                    return false;
+                var (item1, _) = AweSock.ReceiveMessage(server, recvBuffer);
+                if (item1 > 0)
+                    clientExitFlag = true;
+                else if (item1 == 0) return;
 
                 Thread.Sleep(1000);
-            } while (!CLIENT_EXIT_FLAG);
-            return true;
+            } while (!clientExitFlag);
         }
 #endregion
     }

@@ -20,7 +20,7 @@ namespace AwesomeSockets.Sockets
         }
     }
 
-    public class AweSock
+    public static class AweSock
     {
         public static ISocket TcpListen(int port, int backlog = 10)
         {
@@ -188,11 +188,11 @@ namespace AwesomeSockets.Sockets
             callback(AwesomeSocket.New(clientSocket), null);
         }
 
-        private static void TcpConnectThread(ISocket connectSocket, EndPoint remoteEndpont, Func<ISocket, Exception, Socket> callback)
+        private static void TcpConnectThread(ISocket connectSocket, EndPoint remoteEndpoint, Func<ISocket, Exception, Socket> callback)
         {
             try
             {
-                connectSocket.Connect(remoteEndpont);
+                connectSocket.Connect(remoteEndpoint);
             }
             catch (Exception ex)
             {

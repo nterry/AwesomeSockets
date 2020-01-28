@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>4</LangVersion>
+        <PackageId>AwesomeSockets</PackageId>
+        <Title>AwesomeSockets</Title>
+        <PackageDescription>A fast, lightweight, and easy to use socket library for C#.</PackageDescription>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <Version>$(Version)</Version>
+        <Authors>Nicholas Terry</Authors>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageTags>AwesomeSockets;Awesome;Sockets;socket;Sockets.net;AweSock;socklib;winsock;sock;socks;managedsockets;managedsocket;managedsock;managed;easy</PackageTags>
+    </PropertyGroup>
+    
+</Project>
